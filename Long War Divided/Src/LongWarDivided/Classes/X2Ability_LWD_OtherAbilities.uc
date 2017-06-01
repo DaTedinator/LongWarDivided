@@ -5,6 +5,9 @@
 class X2Ability_LWD_OtherAbilities extends XMBAbility
 	config(LWD_SoldierSkills);
 
+var localized string SmartlinkProtocolEffectName;
+var localized string SmartlinkProtocolEffectDesc;
+
 var config int GallopCooldown;
 
 var config int SelfAwareCooldown;
@@ -98,7 +101,6 @@ static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIc
 	local X2Effect_ImmediateAbilityActivation ReloadEffect;
 	local X2Condition_AbilitySourceWeapon WeaponCondition;
 	local X2AbilityTemplate Template;
-	local X2Condition_UnitEffects EffectsCondition;
 	local X2Condition_UnitValue ValueCondition;
 
 	// Create a triggered ability that runs at the end of the player's turn
@@ -347,7 +349,8 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 
 	// Set the new range
 	RangeEffect = new class'X2Effect_TightChoke';
-	AddSecondaryEffect(Template, RangeEffect);
+	
+	Template = Passive(TemplateName, ImageIcon, false, RangeEffect);
 
 	// Create the template using a helper function
 	return Template;

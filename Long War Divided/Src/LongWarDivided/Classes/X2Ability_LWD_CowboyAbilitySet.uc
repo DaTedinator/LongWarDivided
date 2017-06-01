@@ -263,7 +263,6 @@ static function X2AbilityTemplate BattleMomentumHit()
 
 static function X2AbilityTemplate SpareShells(name TemplateName, string ImageIcon)
 {
-	local XMBEffect_AddAbilityCharges Effect;
 	local X2AbilityCost_SpareShells AmmoCost;
 	local X2AbilityTemplate Template;
 

@@ -55,7 +55,13 @@
     <Content Include="Src\LongWarDivided\Classes\X2Ability_LWD_OtherAbilities.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Ability_LWD_RaiderAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Ability_LWD_ReconAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_Clear.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\X2DownloadableContentInfo_LongWarDivided.uc" />

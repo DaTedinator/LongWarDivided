@@ -41,15 +41,8 @@ simulated function name CanAfford(XComGameState_Ability kAbility, XComGameState_
 
 simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGameState_Ability kAbility, XComGameState_BaseObject AffectState, XComGameState_Item AffectWeapon, XComGameState NewGameState)
 {
-	local XComGameStateHistory History;
-	local XComGameState_BaseObject TargetState;
-	local XComGameState_Unit Unit;
 	local int Cost;
 
-	History = `XCOMHISTORY;
-	Unit = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID));
-
-	TargetState = History.GetGameStateForObjectID(AbilityContext.InputContext.PrimaryTarget.ObjectID);
 	Cost = iAmmo;
 	//Cost = CalcAmmoCost(kAbility, AffectWeapon, TargetState);
 
