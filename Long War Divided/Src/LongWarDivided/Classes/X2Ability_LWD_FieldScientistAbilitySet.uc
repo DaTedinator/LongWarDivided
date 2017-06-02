@@ -1,4 +1,4 @@
-class X2Ability_LWD_FieldScientistAbilitySet extends XMBAbility
+class X2Ability_LWD_FieldScientistAbilitySet extends TeddyXMBAbility
 	dependson(X2Ability_DefaultAbilitySet)
 	config(LWD_SoldierSkills);
 

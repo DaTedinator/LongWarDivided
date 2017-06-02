@@ -2,7 +2,7 @@
 //	For any classes with 3 or fewer new abilities	//
 //////////////////////////////////////////////////////
 
-class X2Ability_LWD_OtherAbilities extends XMBAbility
+class X2Ability_LWD_OtherAbilities extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
 var localized string SmartlinkProtocolEffectName;

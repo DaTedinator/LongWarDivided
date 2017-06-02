@@ -37,6 +37,12 @@
     <Content Include="Src\LongWarDivided\Classes\Examples.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\TeddyXMBAbility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\TeddyXMBCondition_MeleeMovement.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_ChargesOptional.uc">
       <SubType>Content</SubType>
     </Content>

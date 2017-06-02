@@ -1,4 +1,4 @@
-class X2Ability_LWD_RaiderAbilitySet extends XMBAbility
+class X2Ability_LWD_RaiderAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
 var config int ReaveConventionalBonus, ReaveMagneticBonus, ReaveBeamBonus;
@@ -29,75 +29,20 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
 	local X2AbilityCost_ActionPoints ActionPointCost;
-	local X2Condition_Visibility VisibilityCondition;
 	local X2AbilityCharges Charges;
 	local X2AbilityCost_ChargesOptional ChargeCost;
 	local XMBEffect_AddOnslaughtCharges BonusChargesEffect;
 	local X2Effect_GrantActionPoints BonusMoveEffect;
 	local X2Condition_UnitValue ChargedCondition;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
-
-	Template.bDontDisplayInAbilitySummary = true;
-	Template.IconImage = ImageIcon;
-	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY;
-	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
-	Template.DisplayTargetHitChance = true;
-	Template.AbilitySourceName = 'eAbilitySource_Perk'; 
-
-	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-
-	Template.AddShooterEffectExclusions();
-
-	VisibilityCondition = new class'X2Condition_Visibility';
-	VisibilityCondition.bRequireGameplayVisible = true;
-	VisibilityCondition.bAllowSquadsight = true;
-
-	Template.AbilityTargetConditions.AddItem(VisibilityCondition);
-	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
-
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-
-	Template.AddShooterEffectExclusions();
-
-	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template = Attack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_None, 1);
 
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
-	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.iNumPoints = 0;
+	ActionPointCost.bAddWeaponTypicalCost = true;
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('LWD_BattleFocus');
 	Template.AbilityCosts.AddItem(ActionPointCost);
-
-	AddAmmoCost(Template, 1);
-	
-	Template.bAllowAmmoEffects = true;
-	Template.bAllowBonusWeaponEffects = true;
-
-	Template.bAllowFreeFireWeaponUpgrade = true;
-
-	//  Put holo target effect first because if the target dies from this shot, it will be too late to notify the effect.
-	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
-	//  Various Soldier ability specific effects - effects check for the ability before applying	
-	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
-	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
-	
-	Template.AbilityToHitCalc = default.SimpleStandardAim;
-	Template.AbilityToHitOwnerOnMissCalc = default.SimpleStandardAim;
-		
-	Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
-	Template.bUsesFiringCamera = true;
-	Template.CinescriptCameraType = "StandardGunFiring";	
-
-	Template.AssociatedPassives.AddItem('HoloTargeting');
-
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;	
-	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
-
-	//Template.bDisplayInUITooltip = false;
-	//Template.bDisplayInUITacticalText = false;
-
-	Template.bCrossClassEligible = false;
 
 	Charges = new class 'X2AbilityCharges';
 	Charges.InitialCharges = 0;
@@ -138,51 +83,13 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	local X2Condition_UnitValue ChargedCondition;
 	
-	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
-
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-	Template.CinescriptCameraType = "Ranger_Reaper";
-	Template.IconImage = ImageIcon;
-	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY;
-
+	Template = MeleeAttack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_None);
+	
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('LWD_BattleFury');
 	Template.AbilityCosts.AddItem(ActionPointCost);
-
-	Template.AbilityToHitCalc = new class'X2AbilityToHitCalc_StandardMelee';
-
-	Template.AbilityTargetStyle = new class'X2AbilityTarget_MovingMelee';
-	Template.TargetingMethod = class'X2TargetingMethod_MeleePath';
-
-	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-	Template.AbilityTriggers.AddItem(new class'X2AbilityTrigger_EndOfMove');
-
-	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
-	Template.AbilityTargetConditions.AddItem(default.MeleeVisibilityCondition);
-
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-
-	// Don't allow the ability to be used while the unit is disoriented, burning, unconscious, etc.
-	Template.AddShooterEffectExclusions();
-
-	Template.AddTargetEffect(new class'X2Effect_ApplyWeaponDamage');
-	
-	Template.bAllowBonusWeaponEffects = true;
-	Template.bSkipMoveStop = true;
-	
-	// Voice events
-	//
-	Template.SourceMissSpeech = 'SwordMiss';
-
-	Template.BuildNewGameStateFn = TypicalMoveEndAbility_BuildGameState;
-	Template.BuildInterruptGameStateFn = TypicalMoveEndAbility_BuildInterruptGameState;
-
-	Template.bCrossClassEligible = false;
 
 	Charges = new class 'X2AbilityCharges';
 	Charges.InitialCharges = 0;

@@ -1,4 +1,4 @@
-class X2Ability_LWD_CowboyAbilitySet extends XMBAbility
+class X2Ability_LWD_CowboyAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
 var config int ShootistAim, ShootistCrit;

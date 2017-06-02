@@ -1,4 +1,4 @@
-class X2Ability_LWD_ReconAbilitySet extends XMBAbility
+class X2Ability_LWD_ReconAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
 var config int ScannerSweepWidth, ScannerSweepLength, ScannerSweepCooldown;

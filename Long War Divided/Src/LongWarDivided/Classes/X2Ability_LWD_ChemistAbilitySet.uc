@@ -1,4 +1,4 @@
-class X2Ability_LWD_ChemistAbilitySet extends XMBAbility
+class X2Ability_LWD_ChemistAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
 var config int HISHPBonus;
