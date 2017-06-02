@@ -322,7 +322,7 @@ static function X2AbilityTemplate Jab(name TemplateName, string ImageIcon)
 
 	DamageEffect = new class'X2Effect_ApplyWeaponDamage';
 	// TTODO: Modify MeleeAttack to limit the range
-	Template = MeleeAttack(TemplateName, ImageIcon, true, DamageEffect, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_Single);
+	Template = LimitedMeleeAttack(TemplateName, ImageIcon, true, DamageEffect, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_Single, true, 0.5);
 
 	ToHitCalc = new class'X2AbilityToHitCalc_StandardMelee';
 	Template.AbilityToHitCalc = ToHitCalc;
@@ -409,8 +409,7 @@ static function X2AbilityTemplate CattleProd(name TemplateName, string ImageIcon
 
 	Effect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect();
 	
-	// TTODO: Modify MeleeAttack to limit the range
-	Template = MeleeAttack(TemplateName, ImageIcon, false, Effect, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Single);
+	Template = LimitedMeleeAttack(TemplateName, ImageIcon, false, Effect, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Single, true);
 
 	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
 	Template.AbilityToHitCalc = ToHitCalc;

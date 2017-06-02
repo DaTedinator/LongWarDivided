@@ -77,6 +77,7 @@ static function X2AbilityTemplate OnHitDebuff(name DataName, string IconImage, o
 // As MeleeAttack in XMBAbility, but with some extra arguments to check MovementRangeAdjustment and limit max range.
 static function X2AbilityTemplate LimitedMeleeAttack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll,
 														optional bool BlueMove = false,
+														optional float Scale = 1.0,
 														optional int MaxDistanceTravelled = -1,
 														optional int MovementRangeAdj = 0)
 {
@@ -107,6 +108,7 @@ static function X2AbilityTemplate LimitedMeleeAttack(name DataName, string IconI
 
 	Condition = new class'TeddyXMBCondition_MeleeMovement';
 	Condition.bBlueMove = BlueMove;
+	Condition.BlueMoveScale = Scale;
 	Condition.MaxMovementRange = MaxDistanceTravelled;
 	Template.AbilityTargetConditions.AddItem(Condition);
 

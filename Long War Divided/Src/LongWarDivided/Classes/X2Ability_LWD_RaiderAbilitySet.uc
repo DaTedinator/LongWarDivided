@@ -83,7 +83,7 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	local X2Condition_UnitValue ChargedCondition;
 	
-	Template = MeleeAttack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_None);
+	Template = LimitedMeleeAttack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_None, true);
 	
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
