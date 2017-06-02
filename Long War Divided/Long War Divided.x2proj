@@ -37,6 +37,9 @@
     <Content Include="Src\LongWarDivided\Classes\Examples.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_ChargesOptional.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_SpareShells.uc">
       <SubType>Content</SubType>
     </Content>
@@ -132,6 +135,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\XMBEffect_AddItemChargesBySlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\XMBEffect_AddOnslaughtCharges.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\XMBEffect_AddUtilityItem.uc">
