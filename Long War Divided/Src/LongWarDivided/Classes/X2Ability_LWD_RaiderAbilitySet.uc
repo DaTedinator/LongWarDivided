@@ -72,7 +72,7 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 	BonusMoveEffect.TargetConditions.AddItem(ChargedCondition);
 
 	return Template;
-}
+}//Onslaught
 	
 static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 {
@@ -116,7 +116,7 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	AddSecondaryAbility(Template, ReaveBonuses('LWD_ReaveBonuses', ImageIcon));
 
 	return Template;
-}
+}//Reave
 	
 static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIcon)
 {
@@ -142,7 +142,7 @@ static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIc
 	HidePerkIcon(Template);
 
 	return Template;
-}
+}//Reave Bonuses
 	
 static function X2AbilityTemplate BattleFocus(name TemplateName, string ImageIcon)
 {
@@ -167,7 +167,7 @@ static function X2AbilityTemplate BattleFocus(name TemplateName, string ImageIco
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
 
 	return Template;
-}
+}//Battle Focus
 	
 static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon)
 {
@@ -188,12 +188,12 @@ static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
 
 	return Template;
-}
+}//Battle Fury
 	
 //static function X2AbilityTemplate CombatStance(name TemplateName, string ImageIcon)
 //{
-//	
-//}
+//	X2Condition_AbilityCharges
+//}//Combat Stance
 	
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
