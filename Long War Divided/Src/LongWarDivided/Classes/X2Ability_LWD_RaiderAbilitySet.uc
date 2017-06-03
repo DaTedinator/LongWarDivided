@@ -71,6 +71,8 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 	BonusMoveEffect.PointType = class'X2CharacterTemplateManager'.default.MoveActionPoint;
 	BonusMoveEffect.TargetConditions.AddItem(ChargedCondition);
 
+	Template.AddShooterEffect(BonusMoveEffect);
+
 	return Template;
 }//Onslaught
 	
@@ -109,9 +111,6 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	Template.AddShooterEffect(BonusChargesEffect);
 
 	Template.OverrideAbilities.AddItem('StandardShot');
-
-	ChargedCondition = new class'X2Condition_UnitValue';
-	ChargedCondition.AddCheckValue('ReaveChargesSpent', 0, eCheck_GreaterThan);
 
 	AddSecondaryAbility(Template, ReaveBonuses('LWD_ReaveBonuses', ImageIcon));
 
@@ -195,32 +194,55 @@ static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon
 //	X2Condition_AbilityCharges
 //}//Combat Stance
 	
-//static function X2AbilityTemplate (name TemplateName, string ImageIcon)
+static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AbilityCostRefund Effect;
+	local X2Condition_UnitValue Condition;
+
+	Effect = new class'XMBEffect_AbilityCostRefund';
+	Effect.EffectName = 'Ravager';
+	Effect.TriggeredEvent = 'Ravager';
+	Effect.CountValueName = 'RavagerShots';
+	Effect.MaxRefundsPerTurn = 1;
+
+	AbilityNameCondition = new class'XMBCondition_AbilityName';
+	AbilityNameCondition.IncludeAbilityNames.AddItem('LWD_Onslaught');
+	Effect.AbilityTargetConditions.AddItem(AbilityNameCondition);
+
+	Effect.AbilityTargetConditions.AddItem(default.CritCondition);
+
+	Condition = new class'X2Condition_UnitValue';
+	Condition.AddCheckValue('OnslaughtChargesSpent', 0, eCheck_GreaterThan);
+	Effect.TargetConditions.AddItem(Condition);
+
+	Template = Passive(TemplateName, ImageIcon, false, SlamFireEffect);
+
+	return Template;
+}//Ravager
+	
+//static function X2AbilityTemplate Reaver(name TemplateName, string ImageIcon)
+//{
+//	// Set up an XMBValue based on _Visibility
+//	// Look at target unit's health
+//}//Reaver
+	
+//static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
 //{
 //	
-//}
+//}//Berserker
+	
+//static function X2AbilityTemplate SwitchHitter(name TemplateName, string ImageIcon)
+//{
+//	
+//}//Switch Hitter
+	
+//static function X2AbilityTemplate Warlord(name TemplateName, string ImageIcon)
+//{
+//	
+//}//Warlord
 	
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
 //	
-//}
-	
-//static function X2AbilityTemplate (name TemplateName, string ImageIcon)
-//{
-//	
-//}
-	
-//static function X2AbilityTemplate (name TemplateName, string ImageIcon)
-//{
-//	
-//}
-	
-//static function X2AbilityTemplate (name TemplateName, string ImageIcon)
-//{
-//	
-//}
-	
-//static function X2AbilityTemplate (name TemplateName, string ImageIcon)
-//{
-//	
-//}
+//}//

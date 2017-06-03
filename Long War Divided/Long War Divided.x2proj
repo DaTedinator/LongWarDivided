@@ -70,6 +70,9 @@
     <Content Include="Src\LongWarDivided\Classes\X2Ability_LWD_ReconAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_AbilityCharges.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Condition_Clear.uc">
       <SubType>Content</SubType>
     </Content>
