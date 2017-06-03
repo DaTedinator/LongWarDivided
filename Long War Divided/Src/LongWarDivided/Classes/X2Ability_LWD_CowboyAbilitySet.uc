@@ -1,6 +1,7 @@
 class X2Ability_LWD_CowboyAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
+var config int CoachGunRadius, CoachGunLength;
 var config int ShootistAim, ShootistCrit;
 var config int BattleMomentumAimBonus, BattleMomentumCritBonus, BattleMomentumBonusCap;
 var config int TrueGritArmorBonus;
@@ -10,6 +11,7 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 	
+	//Templates.AddItem(CoachGun('LWD_CoachGun', "img:///UILibrary_LWD.ability_CoachGun"));
 	Templates.AddItem(Shootist('LWD_Shootist', "img:///UILibrary_LWD.ability_Shootist"));
 	Templates.AddItem(LeadDealer('LWD_LeadDealer', "img:///UILibrary_LWD.ability_LeadDealer"));
 	Templates.AddItem(StoppingPower('LWD_StoppingPower', "img:///UILibrary_LWD.ability_StoppingPower"));
@@ -28,6 +30,11 @@ static function array<X2DataTemplate> CreateTemplates()
 	return Templates;
 }
 
+
+//static function X2AbilityTemplate CoachGun(name TemplateName, string ImageIcon)
+//{
+//	
+//}//Coach Gun
 
 static function X2AbilityTemplate Shootist(name TemplateName, string ImageIcon)
 {

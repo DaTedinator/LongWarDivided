@@ -9,11 +9,14 @@ var localized string SmartlinkProtocolEffectName;
 var localized string SmartlinkProtocolEffectDesc;
 
 var config int GallopCooldown;
+var config int FullyStockedBonusCharges;
 
 var config int SelfAwareCooldown;
 var config int SmartlinkProtocolAimBonus, SmartlinkProtocolCritBonus, SmartlinkProtocolCooldown;
 
 var config int WhitesOfTheirEyesRange;
+
+var config int DynamiteBonusRadius;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -22,7 +25,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Artillery
 	Templates.AddItem(AntiMateriel('LWD_AntiMateriel', "img:///UILibrary_LWD.ability_AntiMateriel"));
 	Templates.AddItem(Gallop('LWD_Gallop', "img:///UILibrary_LWD.ability_Gallop"));
-	//Templates.AddItem(FullyStocked('LWD_', "img:///UILibrary_LWD.ability_FullyStocked"));
+	Templates.AddItem(FullyStocked('LWD_', "img:///UILibrary_LWD.ability_FullyStocked"));
 	// Assault
 	Templates.AddItem(HandsAndFeet('LWD_HandsAndFeet', "img:///UILibrary_LWD.ability_handsandfeet"));
 	// Combat Engineer
@@ -38,7 +41,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Partisan
 	Templates.AddItem(CattleProd('LWD_CattleProd', "img:///UILibrary_LWD.ability_cattleprod"));
 	// Sapper
-	//Templates.AddItem(Dynamite('LWD_Dynamite', "img:///UILibrary_LWD.ability_Dynamite"));
+	Templates.AddItem(Dynamite('LWD_Dynamite', "img:///UILibrary_LWD.ability_Dynamite"));
 
 	//Templates.AddItem(('LWD_', "img:///UILibrary_LWD.ability_"));
 
@@ -66,7 +69,7 @@ static function X2AbilityTemplate AntiMateriel(name TemplateName, string ImageIc
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
 
 	return Template;
-}
+}//Anti-Materiel
 
 static function X2AbilityTemplate Gallop(name TemplateName, string ImageIcon)
 {
@@ -88,12 +91,19 @@ static function X2AbilityTemplate Gallop(name TemplateName, string ImageIcon)
 	AddCooldown(Template, default.GallopCooldown);
 
 	return Template;
-}
+}//Gallop
 
-//static function X2AbilityTemplate FullyStocked(name TemplateName, string ImageIcon)
-//{
-//	
-//}
+static function X2AbilityTemplate FullyStocked(name TemplateName, string ImageIcon)
+{
+	local XMBEffect_AddAbilityCharges RocketChargesEffect;
+
+	RocketChargesEffect = new class 'XMBEffect_AddAbilityCharges';
+	RocketChargesEffect.AbilityNames.AddItem('LWRocketLauncher');
+	RocketChargesEffect.AbilityNames.AddItem('LWBlasterLauncher');
+	RocketChargesEffect.BonusCharges = default.FullyStockedBonusCharges;
+
+	return Passive(TemplateName, ImageIcon, false, RocketChargesEffect);
+}//Fully Stocked
 
 static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIcon)
 {
@@ -137,7 +147,7 @@ static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIc
 	Template.bShowActivation = true;
 
 	return Template;
-}
+}//Hands and Feet
 
 static function X2AbilityTemplate ArtificialIntelligence(name TemplateName, string ImageIcon)
 {
@@ -185,7 +195,7 @@ static function X2AbilityTemplate ArtificialIntelligence(name TemplateName, stri
 	Template.bShowPostActivation = true;
 
 	return Template;
-}
+}//Artificial Intelligence
 
 static function X2AbilityTemplate SelfAware(name TemplateName, string ImageIcon)
 {
@@ -202,7 +212,7 @@ static function X2AbilityTemplate SelfAware(name TemplateName, string ImageIcon)
 	Template.bShowActivation = true;
 
 	return Template;
-}
+}//Self Aware
 
 static function X2AbilityTemplate SmartlinkProtocol(name TemplateName, string ImageIcon)
 {
@@ -293,7 +303,7 @@ static function X2AbilityTemplate SmartlinkProtocol(name TemplateName, string Im
 	Template.CustomSelfFireAnim = 'NO_DefenseProtocol';
 
 	return Template;
-}
+}//Smartlink Protocol
 
 static function X2Effect_SmartlinkProtocol SmartlinkProtocolEffect()
 {
@@ -310,7 +320,7 @@ static function X2Effect_SmartlinkProtocol SmartlinkProtocolEffect()
 	Effect.AimBonus = default.SmartlinkProtocolAimBonus;
 
 	return Effect;
-}
+}//SmartlinkProtocolEffect
 
 static function X2AbilityTemplate Jab(name TemplateName, string ImageIcon)
 {
@@ -340,7 +350,7 @@ static function X2AbilityTemplate Jab(name TemplateName, string ImageIcon)
 	AddSecondaryEffect(Template, DisorientedEffect);
 
 	return Template;
-}
+}//Jab
 
 static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon)
 {
@@ -354,7 +364,7 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 
 	// Create the template using a helper function
 	return Template;
-}
+}//Tight Choke
 
 // TTODO: Consider whether to add aim bonus to these attacks/get rid of range penalties
 static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string ImageIcon)
@@ -399,7 +409,7 @@ static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string Im
 	AddPerTargetCooldown(Template, 1);
 
 	return Template;
-}
+}//Whites of Their eyes
 
 static function X2AbilityTemplate CattleProd(name TemplateName, string ImageIcon)
 {
@@ -415,12 +425,27 @@ static function X2AbilityTemplate CattleProd(name TemplateName, string ImageIcon
 	Template.AbilityToHitCalc = ToHitCalc;
 
 	return Template;
-}
+}//Cattle Prod
 
-//static function X2AbilityTemplate Dynamite(name TemplateName, string ImageIcon)
-//{
-//	
-//}
+static function X2AbilityTemplate Dynamite(name TemplateName, string ImageIcon)
+{
+	local XMBEffect_BonusRadius Effect;
+	local X2AbilityTemplate Template;
+	local XMBEffect_AddUtilityItem ItemEffect;
+
+	Effect = new class'XMBEffect_BonusRadius';
+	Effect.EffectName = 'Dynamite';
+	Effect.fBonusRadius = default.DynamiteBonusRadius;
+	Effect.IncludeItemNames.AddItem('ShapedCharge');
+
+	Template = Passive(TemplateName, ImageIcon, true, Effect);
+
+	ItemEffect = new class 'XMBEffect_AddUtilityItem';
+	ItemEffect.DataName = 'ShapedCharge';
+	AddSecondaryEffect(Template, ItemEffect);
+
+	return Template;
+}//Dynamite
 
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{

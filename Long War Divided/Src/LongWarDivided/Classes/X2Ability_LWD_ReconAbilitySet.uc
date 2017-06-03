@@ -5,6 +5,7 @@ var config int ScannerSweepWidth, ScannerSweepLength, ScannerSweepCooldown;
 var config int EagleEyesVisionBonus, EagleEyesCritBonus;
 var config int WatchmanSightBonus, WatchmanDodgeBonus;
 var config int LookoutAimPenalty;
+var config int GhostPassiveReduction, GhostActiveReduction, GhostDuration, Ghost Cooldown;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -14,7 +15,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(EagleEyes('LWD_EagleEyes', "img:///UILibrary_LWD.ability_eagleeyes"));
 	Templates.AddItem(Watchman('LWD_Watchman', "img:///UILibrary_LWD2.ability_Watchman"));
 	Templates.AddItem(Lookout('LWD_Lookout', "img:///UILibrary_LWD2.ability_Lookout"));
-	//Templates.AddItem(Ghost('LWD_Ghost', "img:///UILibrary_LWD2.ability_Ghost"));
+	Templates.AddItem(Ghost('LWD_Ghost', "img:///UILibrary_LWD2.ability_Ghost"));
 
 	return Templates;
 }
@@ -99,7 +100,7 @@ static function X2AbilityTemplate ScannerSweep(name TemplateName, string ImageIc
 	Template.ActivationSpeech = 'ScanningProtocol';
 
 	return Template;
-}
+}//Scanner Sweep
 
 static function X2AbilityTemplate EagleEyes(name TemplateName, string ImageIcon)
 {
@@ -122,7 +123,7 @@ static function X2AbilityTemplate EagleEyes(name TemplateName, string ImageIcon)
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
 
 	return Template;
-}
+}//Eagle Eyes
 
 static function X2AbilityTemplate Watchman(name TemplateName, string ImageIcon)
 {
@@ -162,7 +163,7 @@ static function X2AbilityTemplate Watchman(name TemplateName, string ImageIcon)
 	AddIconPassive(Template);
 
 	return Template;
-}
+}//Watchman
 
 static function X2AbilityTemplate Lookout(name TemplateName, string ImageIcon)
 {
@@ -185,12 +186,42 @@ static function X2AbilityTemplate Lookout(name TemplateName, string ImageIcon)
 	AddIconPassive(Template);
 
 	return Template;
-}
+}//Lookout
 	
-//static function X2AbilityTemplate Ghost(name TemplateName, string ImageIcon)
-//{
-//	
-//}
+static function X2AbilityTemplate Ghost(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_PersistentStatChange		Effect;
+
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostPassiveReduction);
+
+	Template = Passive(TemplateName, ImageIcon, true, Effect);
+
+	AddSecondaryAbility(Template, GhostActivated(TemplateName, ImageIcon));
+
+	return Template;
+}//Ghost
+	
+static function X2AbilityTemplate GhostActivated(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_PersistentStatChange		Effect;
+	local X2Condition_Concealed				Condition;
+
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostActiveReduction);
+	Effect.BuildPersistentEffect(default.GhostDuration,false,true,false,eGameRule_PlayerTurnBegin);
+
+	Template = SelfTargetActivated(TemplateName, ImageIcon, false, Effect, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free);
+
+	Condition = new class'X2Condition_Concealed';
+	Template.AbilityTargetConditions.AddItem(Condition);
+
+	AddCooldown(Template, default.GhostCooldown);
+
+	return Template;
+}//GhostActivated
 	
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
