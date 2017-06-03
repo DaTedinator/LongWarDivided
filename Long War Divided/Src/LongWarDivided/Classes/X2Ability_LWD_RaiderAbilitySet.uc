@@ -4,6 +4,8 @@ class X2Ability_LWD_RaiderAbilitySet extends TeddyXMBAbility
 var config int ReaveConventionalBonus, ReaveMagneticBonus, ReaveBeamBonus;
 var config int BattleFocusDamageBonus;
 var config int BattleFuryShred;
+var config int ReaverHitBonus, ReaverCritBonus;
+var config int CombatStanceOverwatchBonus, CombatStanceCounterattackDodgeAmount;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -13,12 +15,17 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Reave('LWD_Reave', "img:///UILibrary_LWD.ability_Reave"));
 	Templates.AddItem(BattleFocus('LWD_BattleFocus', "img:///UILibrary_LWD.ability_BattleFocus"));
 	Templates.AddItem(BattleFury('LWD_BattleFury', "img:///UILibrary_LWD.ability_BattleFury"));
-	//Templates.AddItem(CombatStance('LWD_CombatStance', "img:///UILibrary_LWD.ability_CombatStance"));
-	//Templates.AddItem(Ravager('LWD_Ravager', "img:///UILibrary_LWD.ability_Ravager"));
-	//Templates.AddItem(Reaver('LWD_Reaver', "img:///UILibrary_LWD.ability_Reaver"));
-	//Templates.AddItem(Berserker('LWD_Berserker', "img:///UILibrary_LWD.ability_Berserker"));
+	
+	Templates.AddItem(CombatStance('LWD_CombatStance', "img:///UILibrary_LWD.ability_CombatStance"));
+	Templates.AddItem(CombatStanceAttack('LWD_CombatStanceAttack', "img:///UILibrary_LWD.ability_CombatStance"));
+	Templates.AddItem(CombatStancePreparationAbility('LWD_CombatStancePreparationAbility'));
+	Templates.AddItem(CombatStanceCounterattackAbility('LWD_CombatStanceCounterattackAbility', "img:///UILibrary_LWD.ability_CombatStance"));
+	
+	Templates.AddItem(Ravager('LWD_Ravager', "img:///UILibrary_LWD.ability_Ravager"));
+	Templates.AddItem(Reaver('LWD_Reaver', "img:///UILibrary_LWD.ability_Reaver"));
+	Templates.AddItem(Berserker('LWD_Berserker', "img:///UILibrary_LWD.ability_Berserker"));
 	//Templates.AddItem(SwitchHitter('LWD_SwitchHitter', "img:///UILibrary_LWD.ability_SwitchHitter"));
-	//Templates.AddItem(Warlord('LWD_Warlord', "img:///UILibrary_LWD.ability_Warlord"));
+	Templates.AddItem(PurePassive('LWD_Warlord', "img:///UILibrary_LWD.ability_Warlord"));
 	//Templates.AddItem(('LWD_', "img:///UILibrary_LWD.ability_"));
 
 	return Templates;
@@ -122,6 +129,7 @@ static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIc
 	local X2AbilityTemplate Template;
 	local XMBEffect_ConditionalBonus Effect;
 	local XMBValue_UnitValue Value;
+	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
 	Value.UnitValueName = 'ReaveChargesSpent';
@@ -133,6 +141,10 @@ static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIc
 	Effect.AddDamageModifier(default.ReaveBeamBonus, eHit_Success, 'beam');
 	Effect.ScaleValue = Value;
 	Effect.ScaleMax = 1;
+
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LWD_Reave');
+	Effect.AbilityTargetConditions.AddItem(Condition);
 
 	// Create the template
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
@@ -148,9 +160,10 @@ static function X2AbilityTemplate BattleFocus(name TemplateName, string ImageIco
 	local X2AbilityTemplate Template;
 	local XMBEffect_ConditionalBonus Effect;
 	local XMBValue_UnitValue Value;
+	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
-	Value.UnitValueName = 'ReaveChargesSpent';
+	Value.UnitValueName = 'OnslaughtChargesSpent';
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.EffectName = 'ChargedReaveBonus';
@@ -161,6 +174,10 @@ static function X2AbilityTemplate BattleFocus(name TemplateName, string ImageIco
 	Effect.AddDamageModifier(default.BattleFocusDamageBonus + 2, eHit_Crit, 'beam');
 	Effect.ScaleValue = Value;
 	Effect.ScaleMax = 1;
+
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LWD_Onslaught');
+	Effect.AbilityTargetConditions.AddItem(Condition);
 
 	// Create the template
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
@@ -173,6 +190,7 @@ static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon
 	local X2AbilityTemplate Template;
 	local XMBEffect_ConditionalBonus Effect;
 	local XMBValue_UnitValue Value;
+	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
 	Value.UnitValueName = 'ReaveChargesSpent';
@@ -183,16 +201,193 @@ static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon
 	Effect.ScaleValue = Value;
 	Effect.ScaleMax = 1;
 
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LWD_Reave');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
 	// Create the template
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
 
 	return Template;
 }//Battle Fury
 	
-//static function X2AbilityTemplate CombatStance(name TemplateName, string ImageIcon)
-//{
-//	X2Condition_AbilityCharges
-//}//Combat Stance
+static function X2AbilityTemplate CombatStance(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_AdditionalAnimSets			AnimSetEffect;
+	local XMBEffect_ConditionalBonus			Effect;
+	local X2Condition_AbilityCharges			Condition;
+
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.AddToHitModifier(default.CombatStanceOverwatchBonus);
+	Effect.AbilityTargetConditions.AddItem(default.ReactionFireCondition);
+	
+	Condition = new class'X2Condition_AbilityCharges';
+	Condition.AbilityName = 'LWD_Onslaught';
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	Template = Passive(TemplateName, ImageIcon, false, Effect);
+
+	AnimSetEffect = new class'X2Effect_AdditionalAnimSets';
+	AnimSetEffect.AddAnimSetWithPath("LWCombatKnife.Anims.AS_CombatKnife"); //???
+	Template.AddTargetEffect(AnimSetEffect);
+
+	Template.AdditionalAbilities.AddItem('LWD_CombatStanceAttack');
+	Template.AdditionalAbilities.AddiTEm('LWD_CombatStancePreparation');
+	Template.AdditionalAbilities.AddItem('LWD_CombatStanceCounterattack');
+	return Template;
+}//Combat Stance
+
+static function X2AbilityTemplate CombatStanceAttack(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityCost_ActionPoints ActionPointCost;
+	local X2AbilityToHitCalc_StandardMelee MeleeHitCalc;
+	local X2Effect_ApplyWeaponDamage PhysicalDamageEffect;
+	local X2Effect_SetUnitValue SetUnitValEffect;
+	local X2Effect_RemoveEffects RemoveEffects;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
+	Template.IconImage = ImageIcon;
+
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.Hostility = eHostility_Offensive;
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+
+	ActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.CounterattackActionPoint);
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.bDontDisplayInAbilitySummary = true;
+
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	MeleeHitCalc = new class'X2AbilityToHitCalc_StandardMelee';
+	Template.AbilityToHitCalc = MeleeHitCalc;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+
+	// Damage Effect
+	PhysicalDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+	Template.AddTargetEffect(PhysicalDamageEffect);
+
+	// The Unit gets to counterattack once
+	SetUnitValEffect = new class'X2Effect_SetUnitValue';
+	SetUnitValEffect.UnitName = class'X2Ability'.default.CounterattackDodgeEffectName;
+	SetUnitValEffect.NewValueToSet = 0;
+	SetUnitValEffect.CleanupType = eCleanup_BeginTurn;
+	SetUnitValEffect.bApplyOnHit = true;
+	SetUnitValEffect.bApplyOnMiss = true;
+	Template.AddShooterEffect(SetUnitValEffect);
+
+	// Remove the dodge increase (happens with a counter attack, which is one time per turn)
+	RemoveEffects = new class'X2Effect_RemoveEffects';
+	RemoveEffects.EffectNamesToRemove.AddItem(class'X2Ability'.default.CounterattackDodgeEffectName);
+	RemoveEffects.bApplyOnHit = true;
+	RemoveEffects.bApplyOnMiss = true;
+	Template.AddShooterEffect(RemoveEffects);
+
+	Template.AbilityTargetStyle = default.SimpleSingleMeleeTarget;
+
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.CinescriptCameraType = "Ranger_Reaper";
+
+	return Template;
+}//CombatStanceAttack
+
+static function X2AbilityTemplate CombatStancePreparationAbility(name TemplateName)
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityTrigger_EventListener Trigger;
+	local X2Effect_ToHitModifier DodgeEffect;
+	local X2Effect_SetUnitValue SetUnitValEffect;
+	local X2Condition_AbilityCharges Condition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
+
+	Template.bDontDisplayInAbilitySummary = true;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Trigger = new class'X2AbilityTrigger_EventListener';
+	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
+	Trigger.ListenerData.EventID = 'PlayerTurnEnded';
+	Trigger.ListenerData.Filter = eFilter_Player;
+	Trigger.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_Self;
+	Template.AbilityTriggers.AddItem(Trigger);
+	Template.AbilityTriggers.AddItem(new class'X2AbilityTrigger_UnitPostBeginPlay');
+
+	// During the Enemy player's turn, the Unit gets a dodge increase
+	DodgeEffect = new class'X2Effect_ToHitModifier';
+	DodgeEffect.EffectName = class'X2Ability'.default.CounterattackDodgeEffectName;
+	DodgeEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	DodgeEffect.SetDisplayInfo(ePerkBuff_Bonus, "Combat Stance", "", Template.IconImage);
+	DodgeEffect.AddEffectHitModifier(eHit_Graze, default.CombatStanceCounterattackDodgeAmount, "Combat Stance", class'X2AbilityToHitCalc_StandardMelee', true, false, true, true, , false);
+	DodgeEffect.bApplyAsTarget = true;
+
+	Condition = new class'X2Condition_AbilityCharges';
+	Condition.AbilityName = 'LWD_Reave';
+	DodgeEffect.TargetConditions.AddItem(Condition);
+
+	Template.AddShooterEffect(DodgeEffect);
+
+	// The Unit gets to counterattack once
+	SetUnitValEffect = new class'X2Effect_SetUnitValue';
+	SetUnitValEffect.UnitName = class'X2Ability'.default.CounterattackDodgeEffectName;
+	SetUnitValEffect.NewValueToSet = class'X2Ability'.default.CounterattackDodgeUnitValue;
+	SetUnitValEffect.CleanupType = eCleanup_BeginTurn;
+	SetUnitValEffect.TargetConditions.AddItem(Condition);
+	Template.AddTargetEffect(SetUnitValEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	
+	return Template;
+}//CombatStancePreparationAbility
+
+static function X2AbilityTemplate CombatStanceCounterattackAbility(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityTrigger_EventListener EventListener;
+	
+	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
+	Template.IconImage = ImageIcon;
+
+	Template.bDontDisplayInAbilitySummary = true;
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Offensive;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	EventListener = new class'X2AbilityTrigger_EventListener';
+	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventListener.ListenerData.EventID = 'AbilityActivated';
+	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.MeleeCounterattackListener;  // this probably has to change
+	Template.AbilityTriggers.AddItem(EventListener);
+
+	// Add dead eye to guarantee the explosion occurs
+	Template.AbilityToHitCalc = default.DeadEye;
+
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.CinescriptCameraType = "Muton_Counterattack";  // might need to change this to ranger or stun lancer ...
+
+	return Template;
+}//CombatStanceCounterattackAbility
 	
 static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 {
@@ -221,26 +416,57 @@ static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 	return Template;
 }//Ravager
 	
-//static function X2AbilityTemplate Reaver(name TemplateName, string ImageIcon)
-//{
-//	// Set up an XMBValue based on _Visibility
-//	// Look at target unit's health
-//}//Reaver
+static function X2AbilityTemplate Reaver(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local TeddyXMBValue_Health Value;
+	local X2Condition_UnitValue ChargedCondition;
+	local XMBCondition_AbilityName AbilityCondition;
+
+	Value = new class'TeddyXMBValue_Health';
+	Value.bTarget = true;
+	Value.bInvert = true;
+
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.AddToHitModifier(default.ReaverHitBonus);
+	Effect.AddToHitModifier(default.ReaverCritBonus, eHit_Crit);
+
+	Effect.ScaleValue = Value;
+	Effect.ScaleMax = 0.9;
+
+	AbilityCondition = new class'XMBCondition_AbilityName';
+	AbilityCondition.IncludeAbilityNames.AddItem('LWD_Reave');
+	Effect.AbilityTargetConditions.AddItem(AbilityCondition);
+
+	Template = Passive(TemplateName, ImageIcon, False, Effect);
+
+	ChargedCondition = new class'X2Condition_UnitValue';
+	ChargedCondition.AddCheckValue('ReaveChargesSpent', 0, eCheck_GreaterThan);
+	Template.AbilityTargetConditions.AddItem(ChargedCondition);
+
+	// Create the template using a helper function
+	return Template;
+}//Reaver
 	
-//static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
-//{
-//	
-//}//Berserker
+static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
+{
+	local XMBEffect_AddOnslaughtCharges Effect;
+
+	Effect = new class'XMBEffect_AddOnslaughtCharges';
+	Effect.AbilityNames.AddItem('LWD_Reave');
+	Effect.AbilityNames.AddItem('LWD_Onslaught');
+	Effect.BonusCharges = 1;
+	Effect.MaxCharges = 1;
+	Effect.MaxIncreaseAbilities.AddItem('LWD_Warlord');
+
+	return SelfTargetTrigger(TemplateName, ImageIcon, false, Effect, 'UnitTakeEffectDamage');
+}//Berserker
 	
 //static function X2AbilityTemplate SwitchHitter(name TemplateName, string ImageIcon)
 //{
 //	
 //}//Switch Hitter
-	
-//static function X2AbilityTemplate Warlord(name TemplateName, string ImageIcon)
-//{
-//	
-//}//Warlord
 	
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{

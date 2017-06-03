@@ -3,6 +3,8 @@ class X2Ability_LWD_CowboyAbilitySet extends TeddyXMBAbility
 
 var config int ShootistAim, ShootistCrit;
 var config int BattleMomentumAimBonus, BattleMomentumCritBonus, BattleMomentumBonusCap;
+var config int TrueGritArmorBonus;
+var config int UnforgivenBonus;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -17,9 +19,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(SpareShells('LWD_SpareShells', "img:///UILibrary_LWD.ability_SpareShells"));
 	//Templates.AddItem(HighNoon('LWD_HighNoon', "img:///UILibrary_LWD.ability_HighNoon"));
 	//Templates.AddItem(SixShooter('LWD_SixShooter', "img:///UILibrary_LWD.ability_SixShooter"));
-	//Templates.AddItem(TrueGrit('LWD_TrueGrit', "img:///UILibrary_LWD.ability_TrueGrit"));
+	Templates.AddItem(TrueGrit('LWD_TrueGrit', "img:///UILibrary_LWD.ability_TrueGrit"));
 	//Templates.AddItem(HangEmHigh('LWD_HangEmHigh', "img:///UILibrary_LWD.ability_HangEmHigh"));
-	//Templates.AddItem(Unforgiven('LWD_Unforgiven', "img:///UILibrary_LWD.ability_Unforgiven"));
+	Templates.AddItem(Unforgiven('LWD_Unforgiven', "img:///UILibrary_LWD.ability_Unforgiven"));
 	//Templates.AddItem(HadItComing('LWD_HadItComing', "img:///UILibrary_LWD.ability_HadItComing"));
 	//Templates.AddItem(('LWD_', "img:///UILibrary_LWD.ability_"));
 
@@ -40,7 +42,7 @@ static function X2AbilityTemplate Shootist(name TemplateName, string ImageIcon)
 	Effect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
 
 	return Passive(TemplateName, ImageIcon, false, Effect);
-}
+}//Shootist
 
 static function X2AbilityTemplate LeadDealer(name TemplateName, string ImageIcon)
 {
@@ -61,7 +63,7 @@ static function X2AbilityTemplate LeadDealer(name TemplateName, string ImageIcon
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
 
 	return Template;
-}
+}//Lead Dealer
 
 static function X2AbilityTemplate StoppingPower(name TemplateName, string ImageIcon)
 {
@@ -77,7 +79,7 @@ static function X2AbilityTemplate StoppingPower(name TemplateName, string ImageI
 	AddIconPassive(Template);
 
 	return Template;
-}
+}//Stopping Power
 
 static function X2AbilityTemplate TrickShot(name TemplateName, string ImageIcon)
 {
@@ -93,7 +95,7 @@ static function X2AbilityTemplate TrickShot(name TemplateName, string ImageIcon)
 	AddIconPassive(Template);
 
 	return Template;
-}
+}//Trick Shot
 
 static function X2AbilityTemplate QuickHands(name TemplateName, string ImageIcon)
 {
@@ -109,9 +111,8 @@ static function X2AbilityTemplate QuickHands(name TemplateName, string ImageIcon
 	AddSecondaryAbility(Template, QuickHandsRefund('LWD_QuickHandsRefund', ImageIcon));
 
 	return Template;
-}
+}//Quick Hands
 
-// This is a part of Quick Hands, above
 static function X2AbilityTemplate QuickHandsRefund(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate				Template;
@@ -140,7 +141,7 @@ static function X2AbilityTemplate QuickHandsRefund(name TemplateName, string Ima
 	HidePerkIcon(Template);
 
 	return Template;
-}
+}//QuickHandsRefund
 
 static function X2AbilityTemplate BattleMomentum(name TemplateName, string ImageIcon)
 {
@@ -180,9 +181,8 @@ static function X2AbilityTemplate BattleMomentum(name TemplateName, string Image
 	AddSecondaryAbility(Template, BattleMomentumHit());
 
 	return Template;
-}
+}//Battle Momentum
 
-// This is a part of the Battle Momentum effect, above. It resets the count when the unit gets a crit.
 static function X2AbilityTemplate BattleMomentumCrit()
 {
 	local X2AbilityTemplate Template;
@@ -221,9 +221,8 @@ static function X2AbilityTemplate BattleMomentumCrit()
 	AddTriggerTargetCondition(Template, default.CritCondition);
 
 	return Template;
-}
+}//BattleMomentumCrit
 
-// This is a part of the Battle Momentum effect, above. It increments the count when the unit gets a hit.
 static function X2AbilityTemplate BattleMomentumHit()
 {
 	local X2AbilityTemplate Template;
@@ -259,7 +258,7 @@ static function X2AbilityTemplate BattleMomentumHit()
 	AddTriggerTargetCondition(Template, default.HitCondition);
 
 	return Template;
-}
+}//BattleMomentumHit
 
 static function X2AbilityTemplate SpareShells(name TemplateName, string ImageIcon)
 {
@@ -276,10 +275,62 @@ static function X2AbilityTemplate SpareShells(name TemplateName, string ImageIco
 	Template.ActivationSpeech = 'Reloading';
 
 	return Template;
-}
+}//Spare Shells
 
-// Perk name:		
-// Perk effect:		
+//static function X2AbilityTemplate HighNoon(name TemplateName, string ImageIcon)
+//{
+//	
+//}
+
+//static function X2AbilityTemplate SixShooter(name TemplateName, string ImageIcon)
+//{
+//	
+//}
+
+static function X2AbilityTemplate TrueGrit(name TemplateName, string ImageIcon)
+{
+	local X2Effect_PersistentStatChange Effect;
+	local X2AbilityTemplate Template;
+
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'TrueGrit';
+	Effect.DuplicateResponse = eDupe_Allow;
+	Effect.AddPersistentStatChange(eStat_ArmorMitigation, default.TrueGritArmorBonus);
+	Effect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+
+	Template = SelfTargetTrigger(TemplateName, ImageIcon, true, Effect, 'UnitTakeEffectDamage');
+
+	return Template;
+}//True Grit
+
+//static function X2AbilityTemplate HangEmHigh(name TemplateName, string ImageIcon)
+//{
+//	
+//}
+
+static function X2AbilityTemplate Unforgiven(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus BonusEffect;
+	local X2Condition_Unforgiven Condition;
+
+	Condition = new class'X2Condition_Unforgiven';
+
+	BonusEffect = new class'XMBEffect_ConditionalBonus';
+	BonusEffect.AddToHitModifier(default.UnforgivenBonus);
+	BonusEffect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
+	BonusEffect.AbilityTargetConditions.AddItem(Condition);
+
+	Template = Passive(TemplateName, ImageIcon, false, BonusEffect);
+
+	return Template;
+}//Unforgiven
+
+//static function X2AbilityTemplate HadItComing(name TemplateName, string ImageIcon)
+//{
+//	
+//}
+
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
 //	
