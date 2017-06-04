@@ -21,12 +21,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(SpareShells('LWD_SpareShells', "img:///UILibrary_LWD.ability_SpareShells"));
 	//Templates.AddItem(HighNoon('LWD_HighNoon', "img:///UILibrary_LWD.ability_HighNoon"));
 	Templates.AddItem(SixShooter('LWD_SixShooter', "img:///UILibrary_LWD.ability_SixShooter"));
-	Templates.AddItem(SixShooterShot('LWD_SSS1', "img:///UILibrary_LWD.ability_SixShooter", 1));
-	Templates.AddItem(SixShooterShot('LWD_SSS2', "img:///UILibrary_LWD.ability_SixShooter", 2));
-	Templates.AddItem(SixShooterShot('LWD_SSS3', "img:///UILibrary_LWD.ability_SixShooter", 3));
-	Templates.AddItem(SixShooterShot('LWD_SSS4', "img:///UILibrary_LWD.ability_SixShooter", 4));
-	Templates.AddItem(SixShooterShot('LWD_SSS5', "img:///UILibrary_LWD.ability_SixShooter", 5));
-	Templates.AddItem(SixShooterShot('LWD_SSS6', "img:///UILibrary_LWD.ability_SixShooter", 6));
 	Templates.AddItem(TrueGrit('LWD_TrueGrit', "img:///UILibrary_LWD.ability_TrueGrit"));
 	//Templates.AddItem(HangEmHigh('LWD_HangEmHigh', "img:///UILibrary_LWD.ability_HangEmHigh"));
 	Templates.AddItem(Unforgiven('LWD_Unforgiven', "img:///UILibrary_LWD.ability_Unforgiven"));
@@ -233,6 +227,8 @@ static function X2AbilityTemplate BattleMomentumCrit()
 	// Only count crits
 	AddTriggerTargetCondition(Template, default.CritCondition);
 
+	HidePerkIcon(Template);
+
 	return Template;
 }//BattleMomentumCrit
 
@@ -269,6 +265,8 @@ static function X2AbilityTemplate BattleMomentumHit()
 
 	// Only count hits
 	AddTriggerTargetCondition(Template, default.HitCondition);
+
+	HidePerkIcon(Template);
 
 	return Template;
 }//BattleMomentumHit
@@ -307,34 +305,27 @@ static function X2AbilityTemplate SixShooter(name TemplateName, string ImageIcon
 
 	Template = SelfTargetActivated(TemplateName, ImageIcon, false, Effect, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_DoubleConsumeAll);
 
-	Template.AdditionalAbilities.AddItem('LWD_SSS1');
-	Template.AdditionalAbilities.AddItem('LWD_SSS2');
-	Template.AdditionalAbilities.AddItem('LWD_SSS3');
-	Template.AdditionalAbilities.AddItem('LWD_SSS4');
-	Template.AdditionalAbilities.AddItem('LWD_SSS5');
-	Template.AdditionalAbilities.AddItem('LWD_SSS6');
+	AddSecondaryAbility(Template, SixShooterShot('LWD_SixShooterShot', ImageIcon));
+
+	AddCharges(Template, 1);
 
 	return Template;
 }//Six Shooter
 
-static function X2AbilityTemplate SixShooterShot(name TemplateName, string ImageIcon, int ShotNum)
+static function X2AbilityTemplate SixShooterShot(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
 	local X2Condition_UnitValue Condition;
-	local X2Effect_IncrementUnitValue Effect;
 
-	// Create a standard attack that doesn't cost an action.
 	Template = Attack(TemplateName, ImageIcon, false, none, 50, eCost_None, 0);
 
 	Condition = new class'X2Condition_UnitValue';
-	Condition.AddCheckValue('SixShooterActive', ShotNum, eCheck_Exact);
+	Condition.AddCheckValue('SixShooterActive', 0, eCheck_GreaterThan);
 	Template.AbilityShooterConditions.AddItem(Condition);
-	
-	Effect = new class'X2Effect_IncrementUnitValue';
-	Effect.UnitName = 'SixShooterActive';
-	Effect.NewValueToSet = 1;
 
-	Template.OverrideAbilities.AddItem('PistolStandardShot');
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailable;
+
+	AddCharges(Template, 6);
 
 	return Template;
 }//SixShooterShot
