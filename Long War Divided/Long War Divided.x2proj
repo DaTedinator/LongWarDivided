@@ -43,6 +43,9 @@
     <Content Include="Src\LongWarDivided\Classes\TeddyXMBCondition_MeleeMovement.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\TeddyXMBValue_Health.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_ChargesOptional.uc">
       <SubType>Content</SubType>
     </Content>
@@ -76,6 +79,15 @@
     <Content Include="Src\LongWarDivided\Classes\X2Condition_Clear.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_Concealed.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_Unforgiven.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_WeaponSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2DownloadableContentInfo_LongWarDivided.uc" />
     <Content Include="Src\LongWarDivided\Classes\X2Effect_AcidBurns.uc">
       <SubType>Content</SubType>
@@ -84,6 +96,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Effect_GrenadeDoTBonus.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Effect_AdjustRangePenalty.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Effect_HighNoonAdjustRange.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Effect_MadChemistReduction.uc">

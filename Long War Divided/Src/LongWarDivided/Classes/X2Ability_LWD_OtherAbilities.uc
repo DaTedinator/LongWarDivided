@@ -354,15 +354,19 @@ static function X2AbilityTemplate Jab(name TemplateName, string ImageIcon)
 
 static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon)
 {
-	local X2Effect_TightChoke RangeEffect;
+	local X2Effect_AdjustRangePenalty RangeEffect;
 	local X2AbilityTemplate Template;
 
-	// Set the new range
-	RangeEffect = new class'X2Effect_TightChoke';
+	RangeEffect = new class'X2Effect_AdjustRangePenalty';
+	RangeEffect.Multiplier = -0.5;
+	RangeEffect.FlatMod = 10;
+	RangeEffect.PastMax = 4;
+	RangeEffect.PastMaxFlatMod = 40;
+	RangeEffect.bOnlyGood = true;
+	RangeEffect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
 	
 	Template = Passive(TemplateName, ImageIcon, false, RangeEffect);
 
-	// Create the template using a helper function
 	return Template;
 }//Tight Choke
 

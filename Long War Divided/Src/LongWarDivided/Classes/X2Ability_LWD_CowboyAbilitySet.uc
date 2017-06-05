@@ -4,9 +4,11 @@ class X2Ability_LWD_CowboyAbilitySet extends TeddyXMBAbility
 var config int CoachGunRadius, CoachGunLength;
 var config int ShootistAim, ShootistCrit;
 var config int BattleMomentumAimBonus, BattleMomentumCritBonus, BattleMomentumBonusCap;
+var config int HighNoonDuration, HighNoonCooldown;
 var config int TrueGritArmorBonus;
 var config int HangEmHighPistolDamage, HangEmHighRifleDamage, HangEmHighShotgunDamage;
 var config int UnforgivenBonus;
+var config int HadItComingBonus;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -20,12 +22,12 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(QuickHands('LWD_QuickHands', "img:///UILibrary_LWD.ability_QuickHands"));
 	Templates.AddItem(BattleMomentum('LWD_BattleMomentum', "img:///UILibrary_LWD.ability_BattleMomentum"));
 	Templates.AddItem(SpareShells('LWD_SpareShells', "img:///UILibrary_LWD.ability_SpareShells"));
-	//Templates.AddItem(HighNoon('LWD_HighNoon', "img:///UILibrary_LWD.ability_HighNoon"));
+	Templates.AddItem(HighNoon('LWD_HighNoon', "img:///UILibrary_LWD.ability_HighNoon"));
 	Templates.AddItem(SixShooter('LWD_SixShooter', "img:///UILibrary_LWD.ability_SixShooter"));
 	Templates.AddItem(TrueGrit('LWD_TrueGrit', "img:///UILibrary_LWD.ability_TrueGrit"));
 	Templates.AddItem(HangEmHigh('LWD_HangEmHigh', "img:///UILibrary_LWD.ability_HangEmHigh"));
 	Templates.AddItem(Unforgiven('LWD_Unforgiven', "img:///UILibrary_LWD.ability_Unforgiven"));
-	//Templates.AddItem(HadItComing('LWD_HadItComing', "img:///UILibrary_LWD.ability_HadItComing"));
+	Templates.AddItem(HadItComing('LWD_HadItComing', "img:///UILibrary_LWD.ability_HadItComing"));
 	//Templates.AddItem(('LWD_', "img:///UILibrary_LWD.ability_"));
 
 	return Templates;
@@ -289,10 +291,31 @@ static function X2AbilityTemplate SpareShells(name TemplateName, string ImageIco
 	return Template;
 }//Spare Shells
 
-//static function X2AbilityTemplate HighNoon(name TemplateName, string ImageIcon)
-//{
-//	
-//}
+static function X2AbilityTemplate HighNoon(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_Persistent PersistentEffect;
+	local X2Effect_HighNoonAdjustRange RangeEffect;
+
+	PersistentEffect = new class'X2Effect_Persistent';
+	PersistentEffect.EffectName = 'HighNoonMark';
+	PersistentEffect.DuplicateResponse = eDupe_Allow;
+	PersistentEffect.BuildPersistentEffect(default.HighNoonDuration, false, true, false, eGameRule_PlayerTurnEnd);
+	PersistentEffect.bApplyOnHit = true;
+	PersistentEffect.bApplyOnMiss = true;
+
+	Template = TargetedDebuff(TemplateName, ImageIcon, true, PersistentEffect, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_Free);
+
+	RangeEffect = new class'X2Effect_HighNoonAdjustRange';
+	RangeEffect.BuildPersistentEffect(default.HighNoonDuration, false, true, false, eGameRule_PlayerTurnBegin);
+	RangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, true, , Template.AbilitySourceName);
+	Template.AddShooterEffect(RangeEffect);
+
+	AddCooldown(Template, default.HighNoonCooldown);
+
+	return Template;
+
+}//High Noon
 
 static function X2AbilityTemplate SixShooter(name TemplateName, string ImageIcon)
 {
@@ -382,7 +405,7 @@ static function X2AbilityTemplate HangEmHigh(name TemplateName, string ImageIcon
 	AddSecondaryEffect(Template, ShotgunEffect);
 
 	return Template;
-}
+}//Hang 'Em High
 
 static function X2AbilityTemplate Unforgiven(name TemplateName, string ImageIcon)
 {
@@ -402,10 +425,17 @@ static function X2AbilityTemplate Unforgiven(name TemplateName, string ImageIcon
 	return Template;
 }//Unforgiven
 
-//static function X2AbilityTemplate HadItComing(name TemplateName, string ImageIcon)
-//{
-//	
-//}
+static function X2AbilityTemplate HadItComing(name TemplateName, string ImageIcon)
+{
+	local XMBEffect_ConditionalBonus Effect;
+
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.AddToHitModifier(default.HadItComingBonus, eHit_Crit);
+	Effect.AbilityTargetConditions.AddItem(default.FlankedCondition);
+	Effect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
+
+	return Passive(TemplateName, ImageIcon, false, Effect);
+}//Had It Coming
 
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
