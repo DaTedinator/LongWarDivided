@@ -1,7 +1,7 @@
 class X2Ability_LWD_CowboyAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
-var config int CoachGunRadius, CoachGunLength;
+var config int CoachGunAPCost, CoachGunDiameter, CoachGunLength;
 var config int ShootistAim, ShootistCrit;
 var config int BattleMomentumAimBonus, BattleMomentumCritBonus, BattleMomentumBonusCap;
 var config int HighNoonDuration, HighNoonCooldown;
@@ -14,7 +14,7 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 	
-	//Templates.AddItem(CoachGun('LWD_CoachGun', "img:///UILibrary_LWD.ability_CoachGun"));
+	Templates.AddItem(CoachGun('LWD_CoachGun', "img:///UILibrary_LWD.ability_CoachGun"));
 	Templates.AddItem(Shootist('LWD_Shootist', "img:///UILibrary_LWD.ability_Shootist"));
 	Templates.AddItem(LeadDealer('LWD_LeadDealer', "img:///UILibrary_LWD.ability_LeadDealer"));
 	Templates.AddItem(StoppingPower('LWD_StoppingPower', "img:///UILibrary_LWD.ability_StoppingPower"));
@@ -34,10 +34,92 @@ static function array<X2DataTemplate> CreateTemplates()
 }
 
 
-//static function X2AbilityTemplate CoachGun(name TemplateName, string ImageIcon)
-//{
-//	
-//}//Coach Gun
+static function X2AbilityTemplate CoachGun(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2Effect_Shredder					WeaponDamageEffect;
+	local X2Condition_UnitEffects			SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
+
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = ImageIcon;
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+	Template.CinescriptCameraType = "StandardGunFiring";
+	Template.bCrossClassEligible = false;
+	Template.Hostility = eHostility_Offensive;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+	
+	Template.bAllowAmmoEffects = true;
+
+	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.CoachGunAPCost;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+	Template.bUseAmmoAsChargesForHUD = true;
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+
+	Template.AddShooterEffectExclusions();
+	
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bMultiTargetOnly = false; 
+	StandardAim.bGuaranteedHit = false;
+	StandardAim.bOnlyMultiHitWithSuccess = false;
+	StandardAim.bAllowCrit = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.bOverrideAim = false;
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	Template.AbilityTargetStyle = CursorTarget;	
+
+	WeaponDamageEffect = new class'X2Effect_Shredder';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	Template.bFragileDamageOnly = true;
+	Template.bCheckCollision = true;
+
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.CoachGunDiameter * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.bUseWeaponRangeForLength = false;
+	ConeMultiTarget.ConeLength=default.CoachGunLength * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.fTargetRadius = 99;     //  large number to handle weapon range - targets will get filtered according to cone constraints
+	ConeMultiTarget.bIgnoreBlockingCover = false;
+	// Loose Choke isn't implemented yet, but just in case I ever do:
+	ConeMultiTarget.AddBonusConeSize('LWD_LooseChoke', default.CoachGunDiameter * 2.0, default.CoachGunLength * 0.5);
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	return Template;
+}//Coach Gun
 
 static function X2AbilityTemplate Shootist(name TemplateName, string ImageIcon)
 {
