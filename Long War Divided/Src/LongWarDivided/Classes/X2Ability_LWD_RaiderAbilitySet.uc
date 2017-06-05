@@ -1,11 +1,12 @@
 class X2Ability_LWD_RaiderAbilitySet extends TeddyXMBAbility
 	config(LWD_SoldierSkills);
 
-var config int ReaveConventionalBonus, ReaveMagneticBonus, ReaveBeamBonus;
+var config int ReaveBonus;
 var config int BattleFocusDamageBonus;
 var config int BattleFuryShred;
 var config int ReaverHitBonus, ReaverCritBonus;
 var config int CombatStanceOverwatchBonus, CombatStanceCounterattackDodgeAmount;
+var config int VikingOnslaughtBonus, VikingReaveBonus;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -24,7 +25,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Ravager('LWD_Ravager', "img:///UILibrary_LWD.ability_Ravager"));
 	Templates.AddItem(Reaver('LWD_Reaver', "img:///UILibrary_LWD.ability_Reaver"));
 	Templates.AddItem(Berserker('LWD_Berserker', "img:///UILibrary_LWD.ability_Berserker"));
-	//Templates.AddItem(SwitchHitter('LWD_SwitchHitter', "img:///UILibrary_LWD.ability_SwitchHitter"));
+	Templates.AddItem(Viking('LWD_Viking', "img:///UILibrary_LWD.ability_Viking"));
 	Templates.AddItem(PurePassive('LWD_Warlord', "img:///UILibrary_LWD.ability_Warlord"));
 	//Templates.AddItem(('LWD_', "img:///UILibrary_LWD.ability_"));
 
@@ -136,9 +137,7 @@ static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIc
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.EffectName = 'ChargedReaveBonus';
-	Effect.AddDamageModifier(default.ReaveConventionalBonus, eHit_Success, 'conventional');
-	Effect.AddDamageModifier(default.ReaveMagneticBonus, eHit_Success, 'magnetic');
-	Effect.AddDamageModifier(default.ReaveBeamBonus, eHit_Success, 'beam');
+	Effect.AddDamageModifier(default.ReaveBonus, eHit_Success);
 	Effect.ScaleValue = Value;
 	Effect.ScaleMax = 1;
 
@@ -463,10 +462,50 @@ static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
 	return SelfTargetTrigger(TemplateName, ImageIcon, false, Effect, 'UnitTakeEffectDamage');
 }//Berserker
 	
-//static function X2AbilityTemplate SwitchHitter(name TemplateName, string ImageIcon)
-//{
-//	
-//}//Switch Hitter
+static function X2AbilityTemplate Viking(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus ReaveEffect;
+	local XMBValue_UnitValue ReaveValue;
+	local XMBCondition_AbilityName ReaveCondition;
+	local XMBEffect_ConditionalBonus OnslaughtEffect;
+	local XMBValue_UnitValue OnslaughtValue;
+	local XMBCondition_AbilityName OnslaughtCondition;
+
+	Template = Passive(TemplateName, ImageIcon, false, none);
+
+	ReaveValue = new class'XMBValue_UnitValue';
+	ReaveValue.UnitValueName = 'ReaveChargesSpent';
+
+	ReaveEffect = new class'XMBEffect_ConditionalBonus';
+	ReaveEffect.EffectName = 'VikingReaveBonus';
+	ReaveEffect.AddDamageModifier(default.VikingReaveBonus, eHit_Success);
+	ReaveEffect.ScaleValue = ReaveValue;
+	ReaveEffect.ScaleMax = 1;
+
+	ReaveCondition = new class'XMBCondition_AbilityName';
+	ReaveCondition.IncludeAbilityNames.AddItem('LWD_Reave');
+	ReaveEffect.AbilityTargetConditions.AddItem(ReaveCondition);
+
+	AddSecondaryEffect(Template, ReaveEffect);
+
+	OnslaughtValue = new class'XMBValue_UnitValue';
+	OnslaughtValue.UnitValueName = 'OnslaughtChargesSpent';
+
+	OnslaughtEffect = new class'XMBEffect_ConditionalBonus';
+	OnslaughtEffect.EffectName = 'VikingOnslaughtBonus';
+	OnslaughtEffect.AddToHitModifier(default.VikingOnslaughtBonus, eHit_Success);
+	OnslaughtEffect.ScaleValue = OnslaughtValue;
+	OnslaughtEffect.ScaleMax = 1;
+
+	OnslaughtCondition = new class'XMBCondition_AbilityName';
+	OnslaughtCondition.IncludeAbilityNames.AddItem('LWD_Onslaught');
+	OnslaughtEffect.AbilityTargetConditions.AddItem(OnslaughtCondition);
+
+	AddSecondaryEffect(Template, OnslaughtEffect);
+
+	return Template;
+}//Viking
 	
 //static function X2AbilityTemplate (name TemplateName, string ImageIcon)
 //{
