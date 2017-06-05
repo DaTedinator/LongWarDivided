@@ -456,33 +456,33 @@ static function X2AbilityTemplate HangEmHigh(name TemplateName, string ImageIcon
 {
 	local X2AbilityTemplate Template;
 	local XMBEffect_ConditionalBonus PistolEffect;
-	local X2Condition_WeaponSlot PistolCondition;
+	local X2Condition_UnitInventory PistolCondition;
 	local XMBEffect_ConditionalBonus RifleEffect;
-	local X2Condition_WeaponSlot RifleCondition;
+	local X2Condition_UnitInventory RifleCondition;
 	local XMBEffect_ConditionalBonus ShotgunEffect;
-	local X2Condition_WeaponSlot ShotgunCondition;
+	local X2Condition_UnitInventory ShotgunCondition;
 
 	Template = Passive(TemplateName, ImageIcon, false, none);
 
 	PistolEffect = new class'XMBEffect_ConditionalBonus';
 	PistolEffect.AddDamageModifier(default.HangEmHighPistolDamage);
-	PistolCondition = new class'X2Condition_WeaponSlot';
-	PistolCondition.DesiredSlot = eInvSlot_Utility;
-	PistolCondition.WeaponCategory = "pistol";
+	PistolCondition = new class'X2Condition_UnitInventory';
+	PistolCondition.RelevantSlot = eInvSlot_Utility;
+	PistolCondition.RequireWeaponCategory = "pistol";
 	PistolEffect.AbilityTargetConditions.AddItem(PistolCondition);
 	AddSecondaryEffect(Template, PistolEffect);
 
 	RifleEffect = new class'XMBEffect_ConditionalBonus';
 	RifleEffect.AddDamageModifier(default.HangEmHighRifleDamage);
-	RifleCondition = new class'X2Condition_WeaponSlot';
-	RifleCondition.DesiredSlot = eInvSlot_PrimaryWeapon;
+	RifleCondition = new class'X2Condition_UnitInventory';
+	RifleCondition.RelevantSlot = eInvSlot_PrimaryWeapon;
 	RifleEffect.AbilityTargetConditions.AddItem(RifleCondition);
 	AddSecondaryEffect(Template, RifleEffect);
 
 	ShotgunEffect = new class'XMBEffect_ConditionalBonus';
 	ShotgunEffect.AddDamageModifier(default.HangEmHighShotgunDamage);
-	ShotgunCondition = new class'X2Condition_WeaponSlot';
-	ShotgunCondition.DesiredSlot = eInvSlot_SecondaryWeapon;
+	ShotgunCondition = new class'X2Condition_UnitInventory';
+	ShotgunCondition.RelevantSlot = eInvSlot_SecondaryWeapon;
 	ShotgunEffect.AbilityTargetConditions.AddItem(ShotgunCondition);
 	AddSecondaryEffect(Template, ShotgunEffect);
 

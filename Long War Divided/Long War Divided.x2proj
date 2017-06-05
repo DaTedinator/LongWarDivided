@@ -85,9 +85,6 @@
     <Content Include="Src\LongWarDivided\Classes\X2Condition_Unforgiven.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWarDivided\Classes\X2Condition_WeaponSlot.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2DownloadableContentInfo_LongWarDivided.uc" />
     <Content Include="Src\LongWarDivided\Classes\X2Effect_AcidBurns.uc">
       <SubType>Content</SubType>
@@ -111,9 +108,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Effect_SmartlinkProtocol.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWarDivided\Classes\X2Effect_TightChoke.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\XMBAbility.uc">
