@@ -15,7 +15,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(EagleEyes('LWD_EagleEyes', "img:///UILibrary_LWD.ability_eagleeyes"));
 	Templates.AddItem(Watchman('LWD_Watchman', "img:///UILibrary_LWD2.ability_Watchman"));
 	Templates.AddItem(Lookout('LWD_Lookout', "img:///UILibrary_LWD2.ability_Lookout"));
-	Templates.AddItem(Ghost('LWD_Ghost', "img:///UILibrary_LWD2.ability_Ghost"));
+	Templates.AddItem(GhostPassive('LWD_GhostPassive', "img:///UILibrary_LWD2.ability_Ghost"));
+	Templates.AddItem(GhostActive('LWD_GhostActive', "img:///UILibrary_LWD2.ability_Ghost"));
 
 	return Templates;
 }
@@ -74,9 +75,6 @@ static function X2AbilityTemplate ScannerSweep(name TemplateName, string ImageIc
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AddShooterEffectExclusions();
 
-	//ScanEffect = new class'XMBEffect_RevealUnit';
-	//ScanEffect.bRevealConcealed = true;
-	//Template.AddMultiTargetEffect(ScanEffect);
 	ScanEffect = new class'X2Effect_ScanningProtocol';
 	ScanEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnEnd);
 	ScanEffect.TargetConditions.AddItem(default.LivingHostileUnitOnlyProperty);
@@ -188,7 +186,7 @@ static function X2AbilityTemplate Lookout(name TemplateName, string ImageIcon)
 	return Template;
 }//Lookout
 	
-static function X2AbilityTemplate Ghost(name TemplateName, string ImageIcon)
+static function X2AbilityTemplate GhostPassive(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate					Template;
 	local X2Effect_PersistentStatChange		Effect;
@@ -198,12 +196,12 @@ static function X2AbilityTemplate Ghost(name TemplateName, string ImageIcon)
 
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
 
-	AddSecondaryAbility(Template, GhostActivated(TemplateName, ImageIcon));
+	Template.AdditionalAbilities.AddItem('LWD_GhostActive');
 
 	return Template;
 }//Ghost
 	
-static function X2AbilityTemplate GhostActivated(name TemplateName, string ImageIcon)
+static function X2AbilityTemplate GhostActive(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate					Template;
 	local X2Effect_PersistentStatChange		Effect;
