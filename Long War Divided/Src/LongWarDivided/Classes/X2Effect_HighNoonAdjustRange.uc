@@ -57,12 +57,13 @@ function bool MarkCheck(XComGameState_Unit Attacker, XComGameState_Unit Target)
 {
 	local XComGameStateHistory History;
 	local XComGameState_Effect Effect;
+	local int i;
 
 	History = `XCOMHISTORY;
 
 	for (i = 0; i < Target.AffectedByEffectNames.length; i++)
 		{
-			if (Target.AffectedByEffectNames[i] == "HighNoonMark")
+			if (Target.AffectedByEffectNames[i] == 'HighNoonMark')
 			{
 				Effect = XComGameState_Effect(History.GetGameStateForObjectID(Target.AffectedByEffects[i].ObjectID));
 				if (Effect.ApplyEffectParameters.SourceStateObjectRef.ObjectID == Attacker.ObjectID)

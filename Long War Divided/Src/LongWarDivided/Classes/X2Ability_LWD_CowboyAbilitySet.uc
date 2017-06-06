@@ -67,6 +67,7 @@ static function X2AbilityTemplate CoachGun(name TemplateName, string ImageIcon)
 	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = default.CoachGunAPCost;
 	ActionPointCost.bConsumeAllPoints = true;
+	ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('LWD_QuickHands');
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	AmmoCost = new class'X2AbilityCost_Ammo';	
@@ -468,7 +469,7 @@ static function X2AbilityTemplate HangEmHigh(name TemplateName, string ImageIcon
 	PistolEffect.AddDamageModifier(default.HangEmHighPistolDamage);
 	PistolCondition = new class'X2Condition_UnitInventory';
 	PistolCondition.RelevantSlot = eInvSlot_Utility;
-	PistolCondition.RequireWeaponCategory = "pistol";
+	PistolCondition.RequireWeaponCategory = 'pistol';
 	PistolEffect.AbilityTargetConditions.AddItem(PistolCondition);
 	AddSecondaryEffect(Template, PistolEffect);
 

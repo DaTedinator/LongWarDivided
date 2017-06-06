@@ -28,6 +28,7 @@ static function array<X2DataTemplate> CreateTemplates()
 static function X2AbilityTemplate Juiced(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate                 Template;
+	local X2Condition_UnitProperty			TargetProperty;
 	local X2AbilityCooldown					Cooldown;
 	local X2Effect_GrantActionPoints		ActionPointEffect;
 	local X2Effect_Persistent				ActionPointPersistEffect;
@@ -56,7 +57,12 @@ static function X2AbilityTemplate Juiced(name TemplateName, string ImageIcon)
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
 
-	Template.AbilityTargetConditions.AddItem(default.LivingFriendlyTargetProperty);
+	TargetProperty = new class'X2Condition_UnitProperty';
+	TargetProperty.ExcludeDead = true;
+	TargetProperty.ExcludeHostileToSource = true;
+	TargetProperty.ExcludeFriendlyToSource = false;
+	TargetProperty.RequireSquadmates = true;
+	Template.AbilityTargetConditions.AddItem(TargetProperty);
 
 	ActionPointEffect = new class'X2Effect_GrantActionPoints';
     ActionPointEffect.NumActionPoints = 1;

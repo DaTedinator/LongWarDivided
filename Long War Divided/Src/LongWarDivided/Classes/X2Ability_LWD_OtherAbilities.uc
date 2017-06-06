@@ -96,13 +96,18 @@ static function X2AbilityTemplate Gallop(name TemplateName, string ImageIcon)
 static function X2AbilityTemplate FullyStocked(name TemplateName, string ImageIcon)
 {
 	local XMBEffect_AddAbilityCharges RocketChargesEffect;
+	local X2AbilityTemplate Template;
 
 	RocketChargesEffect = new class 'XMBEffect_AddAbilityCharges';
 	RocketChargesEffect.AbilityNames.AddItem('LWRocketLauncher');
 	RocketChargesEffect.AbilityNames.AddItem('LWBlasterLauncher');
 	RocketChargesEffect.BonusCharges = default.FullyStockedBonusCharges;
 
-	return Passive(TemplateName, ImageIcon, false, RocketChargesEffect);
+	Template = Passive(TemplateName, ImageIcon, false, none);
+
+	AddSecondaryEffect(Template, RocketChargesEffect);
+
+	return Template;
 }//Fully Stocked
 
 static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIcon)
@@ -356,6 +361,7 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 {
 	local X2Effect_AdjustRangePenalty RangeEffect;
 	local X2AbilityTemplate Template;
+	local X2Condition_UnitInventory Condition;
 
 	RangeEffect = new class'X2Effect_AdjustRangePenalty';
 	RangeEffect.Multiplier = -0.5;
@@ -363,7 +369,11 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 	RangeEffect.PastMax = 4;
 	RangeEffect.PastMaxFlatMod = 40;
 	RangeEffect.bOnlyGood = true;
-	RangeEffect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
+
+	Condition = new class'X2Condition_UnitInventory';
+	Condition.RelevantSlot = eInvSlot_SecondaryWeapon;
+
+	RangeEffect.TargetConditions.AddItem(Condition);
 	
 	Template = Passive(TemplateName, ImageIcon, false, RangeEffect);
 

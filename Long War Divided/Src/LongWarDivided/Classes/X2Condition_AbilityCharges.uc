@@ -1,7 +1,8 @@
 class X2Condition_AbilityCharges extends X2Condition;
 
-var name AbilityName;			//	The ability that needs to meet the minimum charges
-var int MinCharges;				//	Minimum charges
+var name AbilityName;				//	The ability that needs to meet the minimum charges
+var int MinCharges;					//	Minimum charges
+var bool bAllowUseAmmoAsCharges;	//
 
 event name CallMeetsCondition(XComGameState_BaseObject kTarget) 
 { 
@@ -9,7 +10,10 @@ event name CallMeetsCondition(XComGameState_BaseObject kTarget)
 	local XComGameState_Ability		AbilityState;
 	local int Charges;
 	local bool FoundAbility;
+	local StateObjectReference ObjRef;
+	local XComGameStateHistory History;
 
+	History = `XCOMHISTORY;
 	FoundAbility = false;
 
 	NewUnit = XComGameState_Unit(kTarget);
@@ -40,4 +44,5 @@ event name CallMeetsCondition(XComGameState_BaseObject kTarget)
 defaultproperties
 {
 	MinCharges = 1
+	bAllowUseAmmoAsCharges = false
 }

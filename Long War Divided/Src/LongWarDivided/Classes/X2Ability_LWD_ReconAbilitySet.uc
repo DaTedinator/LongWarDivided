@@ -5,7 +5,7 @@ var config int ScannerSweepWidth, ScannerSweepLength, ScannerSweepCooldown;
 var config int EagleEyesVisionBonus, EagleEyesCritBonus;
 var config int WatchmanSightBonus, WatchmanDodgeBonus;
 var config int LookoutAimPenalty;
-var config int GhostPassiveReduction, GhostActiveReduction, GhostDuration, Ghost Cooldown;
+var config int GhostPassiveReduction, GhostActiveReduction, GhostDuration, GhostCooldown;
 
 static function array<X2DataTemplate> CreateTemplates()
 {

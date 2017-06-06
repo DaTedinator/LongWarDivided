@@ -34,7 +34,7 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 			Modifier = (RangeTable[RangeTable.Length - 1] * PastMaxMultiplier) + PastMaxFlatMod;
 		}
 
-		if ( (bOnlyBon && Modifier < 0) || (bOnlyMal && Modifier > 0) ) Modifier = 0;
+		if ( (bOnlyGood && Modifier < 0) || (bOnlyBad && Modifier > 0) ) {Modifier = 0;}
 
 		if(Modifier != 0)
 		{

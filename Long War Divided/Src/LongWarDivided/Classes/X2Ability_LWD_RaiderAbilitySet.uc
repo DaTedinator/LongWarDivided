@@ -91,7 +91,6 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	local X2AbilityCost_ChargesOptional ChargeCost;
 	local XMBEffect_AddOnslaughtCharges BonusChargesEffect;
 	local X2AbilityCost_ActionPoints ActionPointCost;
-	local X2Condition_UnitValue ChargedCondition;
 	
 	Template = LimitedMeleeAttack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_None, true);
 	
@@ -392,6 +391,7 @@ static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
 	local XMBEffect_AbilityCostRefund Effect;
+	local XMBCondition_AbilityName AbilityNameCondition;
 	local X2Condition_UnitValue Condition;
 
 	Effect = new class'XMBEffect_AbilityCostRefund';
@@ -410,7 +410,7 @@ static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 	Condition.AddCheckValue('OnslaughtChargesSpent', 0, eCheck_GreaterThan);
 	Effect.TargetConditions.AddItem(Condition);
 
-	Template = Passive(TemplateName, ImageIcon, false, SlamFireEffect);
+	Template = Passive(TemplateName, ImageIcon, false, Effect);
 
 	return Template;
 }//Ravager
