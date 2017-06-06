@@ -25,7 +25,16 @@
     <Folder Include="Src\XModBase_Interfaces\Classes" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComLWD_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LongWarDivided.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />

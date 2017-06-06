@@ -164,9 +164,6 @@ simulated function XComGameState HandsAndFeetAbility_BuildGameState( XComGameSta
 	local XComGameStateContext_Ability AbilityContext;
 	local XComGameState_Ability AbilityState;
 	local XComGameState_Item WeaponState, NewWeaponState;
-	local array<X2WeaponUpgradeTemplate> WeaponUpgrades;
-	local bool bFreeReload;
-	local int i;
 
 	NewGameState = `XCOMHISTORY.CreateNewGameState(true, Context);	
 	AbilityContext = XComGameStateContext_Ability(Context);	
