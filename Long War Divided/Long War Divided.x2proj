@@ -34,11 +34,19 @@
     <Content Include="Config\XComLWD_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\UILibrary_LWD.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="LWD Classes.xlsm">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModPreview.jpg">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\LongWarDivided.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
-    <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />

@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # XCOM ModBuddy Solution File, Format Version 11.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "Long War Divided", "Long War Divided\Long War Divided.x2proj", "{BE4A0A45-E82D-43EA-B405-9FC71971FFA5}"
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "Long War Divided", "Long War Divided\Long War Divided.x2proj", "{0013671F-D2F3-4452-A16B-48E7491D8DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|XCOM 2 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE4A0A45-E82D-43EA-B405-9FC71971FFA5}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
-		{BE4A0A45-E82D-43EA-B405-9FC71971FFA5}.Default|XCOM 2.Build.0 = Default|XCOM 2
+		{0013671F-D2F3-4452-A16B-48E7491D8DFF}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
+		{0013671F-D2F3-4452-A16B-48E7491D8DFF}.Default|XCOM 2.Build.0 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
