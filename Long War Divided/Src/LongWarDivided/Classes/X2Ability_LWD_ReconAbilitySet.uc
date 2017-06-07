@@ -13,10 +13,10 @@ static function array<X2DataTemplate> CreateTemplates()
 
 	Templates.AddItem(ScannerSweep('LWD_ScannerSweep', "img:///UILibrary_LWD.ability_scannersweep"));
 	Templates.AddItem(EagleEyes('LWD_EagleEyes', "img:///UILibrary_LWD.ability_eagleeyes"));
-	Templates.AddItem(Watchman('LWD_Watchman', "img:///UILibrary_LWD2.ability_Watchman"));
-	Templates.AddItem(Lookout('LWD_Lookout', "img:///UILibrary_LWD2.ability_Lookout"));
-	Templates.AddItem(GhostPassive('LWD_GhostPassive', "img:///UILibrary_LWD2.ability_Ghost"));
-	Templates.AddItem(GhostActive('LWD_GhostActive', "img:///UILibrary_LWD2.ability_Ghost"));
+	Templates.AddItem(Watchman('LWD_Watchman', "img:///UILibrary_LWD.ability_Watchman"));
+	Templates.AddItem(Lookout('LWD_Lookout', "img:///UILibrary_LWD.ability_Lookout"));
+	Templates.AddItem(GhostPassive('LWD_GhostPassive', "img:///UILibrary_LWD.ability_Ghost"));
+	Templates.AddItem(GhostActive('LWD_GhostActive', "img:///UILibrary_LWD.ability_Ghost"));
 
 	return Templates;
 }

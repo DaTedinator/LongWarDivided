@@ -386,7 +386,7 @@ static function X2Effect_SmartlinkProtocol SmartlinkProtocolEffect()
 	Effect.DuplicateResponse = eDupe_Ignore;            //  Gremlin effects should always be setup such that a target already under the effect is invalid.
 	Effect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
 	Effect.bRemoveWhenTargetDies = true;
-	Effect.SetDisplayInfo(ePerkBuff_Bonus, default.SmartlinkProtocolEffectName, default.SmartlinkProtocolEffectDesc, "img:///UILibrary_LWD2.ability_SmartlinkProtocol", true);
+	Effect.SetDisplayInfo(ePerkBuff_Bonus, default.SmartlinkProtocolEffectName, default.SmartlinkProtocolEffectDesc, "img:///UILibrary_LWD.ability_SmartlinkProtocol", true);
 	Effect.FriendlyName = "Smartlink";
 
 	Effect.AimBonus = default.SmartlinkProtocolAimBonus;

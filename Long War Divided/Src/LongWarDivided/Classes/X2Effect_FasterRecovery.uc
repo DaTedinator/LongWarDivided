@@ -3,7 +3,7 @@
 //			 Based on X2Effect_FieldSurgeon
 //
 //---------------------------------------------------------------------------------------
-class X2Effect_FasterRecovery extends X2Effect_Persistent config(LWD2_Abilities);
+class X2Effect_FasterRecovery extends X2Effect_Persistent;
 
 function UnitEndedTacticalPlay(XComGameState_Effect EffectState, XComGameState_Unit UnitState)
 {
