@@ -25,7 +25,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Artillery
 	Templates.AddItem(AntiMateriel('LWD_AntiMateriel', "img:///UILibrary_LWD.ability_AntiMateriel"));
 	Templates.AddItem(Gallop('LWD_Gallop', "img:///UILibrary_LWD.ability_Gallop"));
-	Templates.AddItem(FullyStocked('LWD_', "img:///UILibrary_LWD.ability_FullyStocked"));
+	Templates.AddItem(FullyStocked('LWD_FullyStocked', "img:///UILibrary_LWD.ability_FullyStocked"));
 	// Assault
 	Templates.AddItem(HandsAndFeet('LWD_HandsAndFeet', "img:///UILibrary_LWD.ability_handsandfeet"));
 	// Combat Engineer
