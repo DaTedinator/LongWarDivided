@@ -7,6 +7,7 @@
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>Long War Divided</AssemblyName>
     <RootNamespace>Long War Divided</RootNamespace>
+    <ProjectGuid>{35211100-ad04-483e-bb0f-f1b03ab44980}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />

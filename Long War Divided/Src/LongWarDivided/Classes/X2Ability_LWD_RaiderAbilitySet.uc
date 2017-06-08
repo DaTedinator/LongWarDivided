@@ -117,8 +117,6 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	BonusChargesEffect.MaxIncreaseAbilities.AddItem('LWD_Warlord');
 	Template.AddShooterEffect(BonusChargesEffect);
 
-	Template.OverrideAbilities.AddItem('StandardShot');
-
 	AddSecondaryAbility(Template, ReaveBonuses('LWD_ReaveBonuses', ImageIcon));
 
 	return Template;
