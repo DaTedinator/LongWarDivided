@@ -25,6 +25,9 @@
     <Folder Include="Src\XModBase_Interfaces\Classes" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Ability Loc.xlsx">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComClassData.ini">
       <SubType>Content</SubType>
     </Content>
@@ -102,8 +105,14 @@
     <Content Include="Src\LongWarDivided\Classes\X2Condition_Unforgiven.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Condition_WeaponSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2DownloadableContentInfo_LongWarDivided.uc" />
     <Content Include="Src\LongWarDivided\Classes\X2Effect_AcidBurns.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2Effect_BonusRocketChargesLW.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWarDivided\Classes\X2Effect_FasterRecovery.uc">
@@ -6272,6 +6281,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XModBase_Interfaces\Classes\XMBOverrideInterface.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="What are these spreadsheets.txt">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

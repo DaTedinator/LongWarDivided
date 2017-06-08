@@ -192,6 +192,7 @@ static function X2AbilityTemplate GhostPassive(name TemplateName, string ImageIc
 	local X2Effect_PersistentStatChange		Effect;
 
 	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'GhostPassive';
 	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostPassiveReduction);
 
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
@@ -208,6 +209,7 @@ static function X2AbilityTemplate GhostActive(name TemplateName, string ImageIco
 	local X2Condition_Concealed				Condition;
 
 	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'GhostActive';
 	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostActiveReduction);
 	Effect.BuildPersistentEffect(default.GhostDuration,false,true,false,eGameRule_PlayerTurnBegin);
 

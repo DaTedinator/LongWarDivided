@@ -387,7 +387,7 @@ static function X2AbilityTemplate HighNoon(name TemplateName, string ImageIcon)
 	PersistentEffect.bApplyOnHit = true;
 	PersistentEffect.bApplyOnMiss = true;
 
-	Template = TargetedDebuff(TemplateName, ImageIcon, true, PersistentEffect, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_Free);
+	Template = TargetedDebuffPassive(TemplateName, ImageIcon, true, PersistentEffect, class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY, eCost_Free);
 
 	RangeEffect = new class'X2Effect_HighNoonAdjustRange';
 	RangeEffect.BuildPersistentEffect(default.HighNoonDuration, false, true, false, eGameRule_PlayerTurnBegin);
@@ -439,16 +439,18 @@ static function X2AbilityTemplate SixShooterShot(name TemplateName, string Image
 
 static function X2AbilityTemplate TrueGrit(name TemplateName, string ImageIcon)
 {
-	local X2Effect_PersistentStatChange Effect;
+	local X2Effect_BonusArmor Effect;
 	local X2AbilityTemplate Template;
 
-	Effect = new class'X2Effect_PersistentStatChange';
+	Effect = new class'X2Effect_BonusArmor';
 	Effect.EffectName = 'TrueGrit';
 	Effect.DuplicateResponse = eDupe_Allow;
-	Effect.AddPersistentStatChange(eStat_ArmorMitigation, default.TrueGritArmorBonus);
+	Effect.ArmorMitigationAmount = default.TrueGritArmorBonus;
 	Effect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
 
 	Template = SelfTargetTrigger(TemplateName, ImageIcon, true, Effect, 'UnitTakeEffectDamage');
+
+	Template.bShowPostActivation = true;
 
 	return Template;
 }//True Grit
@@ -457,33 +459,33 @@ static function X2AbilityTemplate HangEmHigh(name TemplateName, string ImageIcon
 {
 	local X2AbilityTemplate Template;
 	local XMBEffect_ConditionalBonus PistolEffect;
-	local X2Condition_UnitInventory PistolCondition;
+	local X2Condition_WeaponSlot PistolCondition;
 	local XMBEffect_ConditionalBonus RifleEffect;
-	local X2Condition_UnitInventory RifleCondition;
+	local X2Condition_WeaponSlot RifleCondition;
 	local XMBEffect_ConditionalBonus ShotgunEffect;
-	local X2Condition_UnitInventory ShotgunCondition;
+	local X2Condition_WeaponSlot ShotgunCondition;
 
 	Template = Passive(TemplateName, ImageIcon, false, none);
 
 	PistolEffect = new class'XMBEffect_ConditionalBonus';
 	PistolEffect.AddDamageModifier(default.HangEmHighPistolDamage);
-	PistolCondition = new class'X2Condition_UnitInventory';
-	PistolCondition.RelevantSlot = eInvSlot_Utility;
-	PistolCondition.RequireWeaponCategory = 'pistol';
+	PistolCondition = new class'X2Condition_WeaponSlot';
+	PistolCondition.DesiredSlot = eInvSlot_Utility;
+	PistolCondition.WeaponCategory = 'pistol';
 	PistolEffect.AbilityTargetConditions.AddItem(PistolCondition);
 	AddSecondaryEffect(Template, PistolEffect);
 
 	RifleEffect = new class'XMBEffect_ConditionalBonus';
 	RifleEffect.AddDamageModifier(default.HangEmHighRifleDamage);
-	RifleCondition = new class'X2Condition_UnitInventory';
-	RifleCondition.RelevantSlot = eInvSlot_PrimaryWeapon;
+	RifleCondition = new class'X2Condition_WeaponSlot';
+	RifleCondition.DesiredSlot = eInvSlot_PrimaryWeapon;
 	RifleEffect.AbilityTargetConditions.AddItem(RifleCondition);
 	AddSecondaryEffect(Template, RifleEffect);
 
 	ShotgunEffect = new class'XMBEffect_ConditionalBonus';
 	ShotgunEffect.AddDamageModifier(default.HangEmHighShotgunDamage);
-	ShotgunCondition = new class'X2Condition_UnitInventory';
-	ShotgunCondition.RelevantSlot = eInvSlot_SecondaryWeapon;
+	ShotgunCondition = new class'X2Condition_WeaponSlot';
+	ShotgunCondition.DesiredSlot = eInvSlot_SecondaryWeapon;
 	ShotgunEffect.AbilityTargetConditions.AddItem(ShotgunCondition);
 	AddSecondaryEffect(Template, ShotgunEffect);
 

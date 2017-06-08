@@ -148,3 +148,57 @@ static function X2AbilityTemplate LimitedMeleeAttack(name DataName, string IconI
 
 	return Template;
 }
+
+// Helper function for creating an ability that targets a visible enemy and has 100% hit chance, and doesn't display the little red debuff arrows.
+static function X2AbilityTemplate TargetedDebuffPassive(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_Single)
+{
+	local X2AbilityTemplate                 Template;	
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, DataName);
+
+	Template.ShotHUDPriority = ShotHUDPriority;
+	Template.IconImage = IconImage;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.Hostility = eHostility_Offensive;
+
+	if (Cost != eCost_None)
+	{
+		Template.AbilityCosts.AddItem(ActionPointCost(Cost));	
+	}
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+
+	// Don't allow the ability to be used while the unit is disoriented, burning, unconscious, etc.
+	Template.AddShooterEffectExclusions();
+
+	// 100% chance to hit
+	Template.AbilityToHitCalc = default.DeadEye;
+
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	if (Effect != none)
+	{
+		if (X2Effect_Persistent(Effect) != none)
+			X2Effect_Persistent(Effect).SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, true, , Template.AbilitySourceName);
+
+		Template.AddTargetEffect(Effect);
+	}
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	// Use an animation of pointing at the target, rather than the weapon animation.
+	Template.CustomFireAnim = 'HL_SignalPoint';
+	
+	Template.bCrossClassEligible = bCrossClassEligible;
+
+	return Template;
+}
