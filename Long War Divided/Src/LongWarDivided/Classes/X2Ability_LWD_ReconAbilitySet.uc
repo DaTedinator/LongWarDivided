@@ -5,7 +5,8 @@ var config int ScannerSweepWidth, ScannerSweepLength, ScannerSweepCooldown;
 var config int EagleEyesVisionBonus, EagleEyesCritBonus;
 var config int WatchmanSightBonus, WatchmanDodgeBonus;
 var config int LookoutAimPenalty;
-var config int GhostPassiveReduction, GhostActiveReduction, GhostDuration, GhostCooldown;
+var config float GhostPassiveReduction, GhostActiveReduction;
+var config int GhostDuration, GhostCooldown;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -192,6 +193,7 @@ static function X2AbilityTemplate GhostPassive(name TemplateName, string ImageIc
 	local X2Effect_PersistentStatChange		Effect;
 
 	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'GhostPassive';
 	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostPassiveReduction);
 
 	Template = Passive(TemplateName, ImageIcon, true, Effect);
@@ -208,6 +210,7 @@ static function X2AbilityTemplate GhostActive(name TemplateName, string ImageIco
 	local X2Condition_Concealed				Condition;
 
 	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'GhostActive';
 	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.GhostActiveReduction);
 	Effect.BuildPersistentEffect(default.GhostDuration,false,true,false,eGameRule_PlayerTurnBegin);
 
