@@ -1,0 +1,5 @@
+"Wait, what are these spreadsheets?" you ask. 
+
+Nothing too crazy, I'm just really lazy except for when it comes to making tools that will let me avoid different work. I set up these spreadsheets to handle some of the grunt work of filling out ini files and whatnot.
+
+I included them because I put work into them and making them easy to use. So while I do want to hear if you have any problems or suggestions, this was very much me sharing stuff I made for personal use; I don't make any guarantees about updates or bugfixes or anything.
