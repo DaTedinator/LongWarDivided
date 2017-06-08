@@ -19,8 +19,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	
 	Templates.AddItem(CombatStance('LWD_CombatStance', "img:///UILibrary_LWD.ability_CombatStance"));
 	Templates.AddItem(CombatStanceAttack('LWD_CombatStanceAttack', "img:///UILibrary_LWD.ability_CombatStance"));
-	Templates.AddItem(CombatStancePreparationAbility('LWD_CombatStancePreparationAbility'));
-	Templates.AddItem(CombatStanceCounterattackAbility('LWD_CombatStanceCounterattackAbility', "img:///UILibrary_LWD.ability_CombatStance"));
+	Templates.AddItem(CombatStancePreparationAbility('LWD_CombatStancePreparation'));
+	Templates.AddItem(CombatStanceCounterattackAbility('LWD_CombatStanceCounterattack', "img:///UILibrary_LWD.ability_CombatStance"));
 	
 	Templates.AddItem(Ravager('LWD_Ravager', "img:///UILibrary_LWD.ability_Ravager"));
 	Templates.AddItem(Reaver('LWD_Reaver', "img:///UILibrary_LWD.ability_Reaver"));
