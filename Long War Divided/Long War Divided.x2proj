@@ -67,6 +67,9 @@
     <Content Include="Src\LongWarDivided\Classes\TeddyXMBValue_Health.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_ChargesOnslaught.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWarDivided\Classes\X2AbilityCost_ChargesOptional.uc">
       <SubType>Content</SubType>
     </Content>

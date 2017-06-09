@@ -13,6 +13,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local StateObjectReference MaxIncreaseAbilityRef;
 	local int Charges;
 	local XComGameState_Unit UnitState;
+	local name UnitValueName;
 	
 	NewUnit = XComGameState_Unit(kNewTargetState);
 	if (NewUnit == none)
@@ -42,6 +43,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		if (AbilityNames.Find(AbilityState.GetMyTemplateName()) != INDEX_NONE)
 		{
 			Charges = bAllowUseAmmoAsCharges ? AbilityState.GetCharges() : AbilityState.iCharges;
+			UnitValueName = name(AbilityState.GetMyTemplateName() $ "_Charges");
 			if (MaxCharges < 0 || Charges < MaxCharges)
 			{
 				Charges += BonusCharges;
@@ -49,6 +51,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 					Charges = MaxCharges;
 
 				SetCharges(AbilityState, Charges, NewGameState);
+				NewUnit.SetUnitFloatValue(UnitValueName, Charges, eCleanup_BeginTactical);
 			}
 		}
 	}

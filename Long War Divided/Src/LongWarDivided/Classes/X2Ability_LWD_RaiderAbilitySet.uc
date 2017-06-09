@@ -38,7 +38,7 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 	local X2AbilityTemplate Template;
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	local X2AbilityCharges Charges;
-	local X2AbilityCost_ChargesOptional ChargeCost;
+	local X2AbilityCost_ChargesOnslaught ChargeCost;
 	local XMBEffect_AddOnslaughtCharges BonusChargesEffect;
 	local X2Effect_GrantActionPoints BonusMoveEffect;
 	local X2Condition_UnitValue ChargedCondition;
@@ -56,9 +56,8 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 	Charges.InitialCharges = 0;
 	Template.AbilityCharges = Charges;
 
-	ChargeCost = new class'X2AbilityCost_ChargesOptional';
+	ChargeCost = new class'X2AbilityCost_ChargesOnslaught';
 	ChargeCost.MinCharges = 0;
-	ChargeCost.UnitValueName = 'OnslaughtChargesSpent';
 	ChargeCost.OnlyOnHitAbilities.AddItem('LWD_Warlord');
 	Template.AbilityCosts.AddItem(ChargeCost);
 
@@ -72,7 +71,7 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon)
 	Template.OverrideAbilities.AddItem('StandardShot');
 
 	ChargedCondition = new class'X2Condition_UnitValue';
-	ChargedCondition.AddCheckValue('OnslaughtChargesSpent', 0, eCheck_GreaterThan);
+	ChargedCondition.AddCheckValue('LWD_Onslaught_Charges', 0, eCheck_GreaterThan);
 
 	BonusMoveEffect = new class'X2Effect_GrantActionPoints';
 	BonusMoveEffect.NumActionPoints = 1;
@@ -88,7 +87,7 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
 	local X2AbilityCharges Charges;
-	local X2AbilityCost_ChargesOptional ChargeCost;
+	local X2AbilityCost_ChargesOnslaught ChargeCost;
 	local XMBEffect_AddOnslaughtCharges BonusChargesEffect;
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	
@@ -104,7 +103,7 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 	Charges.InitialCharges = 0;
 	Template.AbilityCharges = Charges;
 
-	ChargeCost = new class'X2AbilityCost_ChargesOptional';
+	ChargeCost = new class'X2AbilityCost_ChargesOnslaught';
 	ChargeCost.MinCharges = 0;
 	ChargeCost.UnitValueName = 'ReaveChargesSpent';
 	ChargeCost.OnlyOnHitAbilities.AddItem('LWD_Warlord');
@@ -130,7 +129,7 @@ static function X2AbilityTemplate ReaveBonuses(name TemplateName, string ImageIc
 	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
-	Value.UnitValueName = 'ReaveChargesSpent';
+	Value.UnitValueName = 'LWD_Reave_Charges';
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.EffectName = 'ChargedReaveBonus';
@@ -159,7 +158,7 @@ static function X2AbilityTemplate BattleFocus(name TemplateName, string ImageIco
 	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
-	Value.UnitValueName = 'OnslaughtChargesSpent';
+	Value.UnitValueName = 'LWD_Onslaught_Charges';
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.EffectName = 'ChargedReaveBonus';
@@ -189,7 +188,7 @@ static function X2AbilityTemplate BattleFury(name TemplateName, string ImageIcon
 	local XMBCondition_AbilityName Condition;
 
 	Value = new class'XMBValue_UnitValue';
-	Value.UnitValueName = 'ReaveChargesSpent';
+	Value.UnitValueName = 'LWD_Reave_Charges';
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.EffectName = 'ChargedReaveBonus';
@@ -212,15 +211,16 @@ static function X2AbilityTemplate CombatStance(name TemplateName, string ImageIc
 	local X2AbilityTemplate						Template;
 	local X2Effect_AdditionalAnimSets			AnimSetEffect;
 	local XMBEffect_ConditionalBonus			Effect;
-	local X2Condition_AbilityCharges			Condition;
+	local XMBValue_UnitValue					Value;
+
+	Value = new class'XMBValue_UnitValue';
+	Value.UnitValueName = 'LWD_Onslaught_Charges';
 
 	Effect = new class'XMBEffect_ConditionalBonus';
 	Effect.AddToHitModifier(default.CombatStanceOverwatchBonus);
+	Effect.ScaleValue = Value;
+	Effect.ScaleMax = 1;
 	Effect.AbilityTargetConditions.AddItem(default.ReactionFireCondition);
-	
-	Condition = new class'X2Condition_AbilityCharges';
-	Condition.AbilityName = 'LWD_Onslaught';
-	Effect.AbilityTargetConditions.AddItem(Condition);
 
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
 
@@ -306,7 +306,7 @@ static function X2AbilityTemplate CombatStancePreparationAbility(name TemplateNa
 	local X2AbilityTrigger_EventListener Trigger;
 	local X2Effect_ToHitModifier DodgeEffect;
 	local X2Effect_SetUnitValue SetUnitValEffect;
-	local X2Condition_AbilityCharges Condition;
+	local X2Condition_UnitValue Condition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 
@@ -334,8 +334,8 @@ static function X2AbilityTemplate CombatStancePreparationAbility(name TemplateNa
 	DodgeEffect.AddEffectHitModifier(eHit_Graze, default.CombatStanceCounterattackDodgeAmount, "Combat Stance", class'X2AbilityToHitCalc_StandardMelee', true, false, true, true, , false);
 	DodgeEffect.bApplyAsTarget = true;
 
-	Condition = new class'X2Condition_AbilityCharges';
-	Condition.AbilityName = 'LWD_Reave';
+	Condition = new class'X2Condition_UnitValue';
+	Condition.AddCheckValue('LWD_Reave_Charges', 0, eCheck_GreaterThan);
 	DodgeEffect.TargetConditions.AddItem(Condition);
 
 	Template.AddShooterEffect(DodgeEffect);
@@ -405,7 +405,7 @@ static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 	Effect.AbilityTargetConditions.AddItem(default.CritCondition);
 
 	Condition = new class'X2Condition_UnitValue';
-	Condition.AddCheckValue('OnslaughtChargesSpent', 0, eCheck_GreaterThan);
+	Condition.AddCheckValue('LWD_Onslaught_Charges', 0, eCheck_GreaterThan);
 	Effect.TargetConditions.AddItem(Condition);
 
 	Template = Passive(TemplateName, ImageIcon, false, Effect);
@@ -439,7 +439,7 @@ static function X2AbilityTemplate Reaver(name TemplateName, string ImageIcon)
 	Template = Passive(TemplateName, ImageIcon, False, Effect);
 
 	ChargedCondition = new class'X2Condition_UnitValue';
-	ChargedCondition.AddCheckValue('ReaveChargesSpent', 0, eCheck_GreaterThan);
+	ChargedCondition.AddCheckValue('LWD_Reave_Charges', 0, eCheck_GreaterThan);
 	Template.AbilityTargetConditions.AddItem(ChargedCondition);
 
 	// Create the template using a helper function
@@ -473,7 +473,7 @@ static function X2AbilityTemplate Viking(name TemplateName, string ImageIcon)
 	Template = Passive(TemplateName, ImageIcon, false, none);
 
 	ReaveValue = new class'XMBValue_UnitValue';
-	ReaveValue.UnitValueName = 'ReaveChargesSpent';
+	ReaveValue.UnitValueName = 'LWD_Reave_Charges';
 
 	ReaveEffect = new class'XMBEffect_ConditionalBonus';
 	ReaveEffect.EffectName = 'VikingReaveBonus';
@@ -488,7 +488,7 @@ static function X2AbilityTemplate Viking(name TemplateName, string ImageIcon)
 	AddSecondaryEffect(Template, ReaveEffect);
 
 	OnslaughtValue = new class'XMBValue_UnitValue';
-	OnslaughtValue.UnitValueName = 'OnslaughtChargesSpent';
+	OnslaughtValue.UnitValueName = 'LWD_Onslaught_Charges';
 
 	OnslaughtEffect = new class'XMBEffect_ConditionalBonus';
 	OnslaughtEffect.EffectName = 'VikingOnslaughtBonus';
