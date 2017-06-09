@@ -21,7 +21,7 @@ simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGa
 	if (UnitState == None)
 		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
 	UnitValueName = name(kAbility.GetMyTemplateName() $ "_Charges");
-	TargetUnitState.GetUnitValue(UnitValueName, UnitVal);
+	UnitState.GetUnitValue(UnitValueName, UnitVal);
 
 	if (OnlyOnHitAbilities.Length > 0)
 	{

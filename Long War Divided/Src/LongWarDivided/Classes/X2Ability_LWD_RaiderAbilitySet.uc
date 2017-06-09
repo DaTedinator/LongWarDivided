@@ -105,7 +105,6 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon)
 
 	ChargeCost = new class'X2AbilityCost_ChargesOnslaught';
 	ChargeCost.MinCharges = 0;
-	ChargeCost.UnitValueName = 'ReaveChargesSpent';
 	ChargeCost.OnlyOnHitAbilities.AddItem('LWD_Warlord');
 	Template.AbilityCosts.AddItem(ChargeCost);
 

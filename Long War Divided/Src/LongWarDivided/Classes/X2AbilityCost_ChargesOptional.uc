@@ -23,15 +23,15 @@ simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGa
 	local name OnlyOnHitAbilityName, SharedAbilityName;
 	local StateObjectReference OnlyOnHitAbilityRef;
 	local StateObjectReference SharedAbilityRef;
-	//local XComGameState_Unit UnitState;
-	//local XComGameStateHistory History;
+	local XComGameState_Unit UnitState;
+	local XComGameStateHistory History;
 	local XComGameState_Ability SharedAbilityState;
 	local int ChargesSpent;
 
-	//History = `XCOMHISTORY;
-	//UnitState = XComGameState_Unit(NewGameState.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
-	//if (UnitState == None)
-	//	UnitState = XComGameState_Unit(History.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
+	History = `XCOMHISTORY;
+	UnitState = XComGameState_Unit(NewGameState.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
+	if (UnitState == None)
+		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
 
 	if (OnlyOnHitAbilities.Length > 0)
 	{
