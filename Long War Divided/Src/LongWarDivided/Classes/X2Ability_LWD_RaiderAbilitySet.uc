@@ -227,162 +227,52 @@ static function X2AbilityTemplate CombatStance(name TemplateName, string ImageIc
 	AnimSetEffect.AddAnimSetWithPath("LWCombatKnife.Anims.AS_CombatKnife"); //???
 	Template.AddTargetEffect(AnimSetEffect);
 
-	Template.AdditionalAbilities.AddItem('LWD_CombatStanceAttack');
-	Template.AdditionalAbilities.AddiTEm('LWD_CombatStancePreparation');
-	Template.AdditionalAbilities.AddItem('LWD_CombatStanceCounterattack');
+	AddSecondaryAbility(Template, CombatStanceAttack('LWD_CombatStanceAttack', ImageIcon));
+
 	return Template;
 }//Combat Stance
 
 static function X2AbilityTemplate CombatStanceAttack(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
-	local X2AbilityCost_ActionPoints ActionPointCost;
-	local X2AbilityToHitCalc_StandardMelee MeleeHitCalc;
-	local X2Effect_ApplyWeaponDamage PhysicalDamageEffect;
-	local X2Effect_SetUnitValue SetUnitValEffect;
-	local X2Effect_RemoveEffects RemoveEffects;
-
-	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
-	Template.IconImage = ImageIcon;
-
-	Template.AbilitySourceName = 'eAbilitySource_Standard';
-	Template.Hostility = eHostility_Offensive;
-
-	ActionPointCost = new class'X2AbilityCost_ActionPoints';
-	ActionPointCost.iNumPoints = 1;
-
-	ActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.CounterattackActionPoint);
-	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-	Template.bDontDisplayInAbilitySummary = true;
-
-	ActionPointCost.bConsumeAllPoints = true;
-	Template.AbilityCosts.AddItem(ActionPointCost);
-
-	MeleeHitCalc = new class'X2AbilityToHitCalc_StandardMelee';
-	Template.AbilityToHitCalc = MeleeHitCalc;
-
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	Template.AddShooterEffectExclusions();
-
-	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
-	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
-
-	// Damage Effect
-	PhysicalDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-	Template.AddTargetEffect(PhysicalDamageEffect);
-
-	// The Unit gets to counterattack once
-	SetUnitValEffect = new class'X2Effect_SetUnitValue';
-	SetUnitValEffect.UnitName = class'X2Ability'.default.CounterattackDodgeEffectName;
-	SetUnitValEffect.NewValueToSet = 0;
-	SetUnitValEffect.CleanupType = eCleanup_BeginTurn;
-	SetUnitValEffect.bApplyOnHit = true;
-	SetUnitValEffect.bApplyOnMiss = true;
-	Template.AddShooterEffect(SetUnitValEffect);
-
-	// Remove the dodge increase (happens with a counter attack, which is one time per turn)
-	RemoveEffects = new class'X2Effect_RemoveEffects';
-	RemoveEffects.EffectNamesToRemove.AddItem(class'X2Ability'.default.CounterattackDodgeEffectName);
-	RemoveEffects.bApplyOnHit = true;
-	RemoveEffects.bApplyOnMiss = true;
-	Template.AddShooterEffect(RemoveEffects);
-
-	Template.AbilityTargetStyle = default.SimpleSingleMeleeTarget;
-
-	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-
-	Template.CinescriptCameraType = "Ranger_Reaper";
-
-	return Template;
-}//CombatStanceAttack
-
-static function X2AbilityTemplate CombatStancePreparationAbility(name TemplateName)
-{
-	local X2AbilityTemplate Template;
-	local X2AbilityTrigger_EventListener Trigger;
-	local X2Effect_ToHitModifier DodgeEffect;
-	local X2Effect_SetUnitValue SetUnitValEffect;
+	local X2AbilityToHitCalc_StandardMelee ToHit;
+	local X2Condition_UnitProperty UnitPropertyCondition, SourceNotConcealedCondition;
 	local X2Condition_UnitValue Condition;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
+	Template = Attack(TemplateName, ImageIcon, false, none, class'UIUtilities_Tactical'.const.CLASS_SERGEANT_PRIORITY, eCost_None);
+	
+	HidePerkIcon(Template);
+	AddIconPassive(Template);
 
-	Template.bDontDisplayInAbilitySummary = true;
+	ToHit = new class'X2AbilityToHitCalc_StandardMelee';
+	ToHit.bReactionFire = true;
+	Template.AbilityToHitCalc = ToHit;
+	Template.AbilityTargetStyle = default.SimpleSingleMeleeTarget;
 
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
+	Template.AbilityTriggers.Length = 0;
+	AddMovementTrigger(Template);
 
-	Trigger = new class'X2AbilityTrigger_EventListener';
-	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
-	Trigger.ListenerData.EventID = 'PlayerTurnEnded';
-	Trigger.ListenerData.Filter = eFilter_Player;
-	Trigger.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_Self;
-	Template.AbilityTriggers.AddItem(Trigger);
-	Template.AbilityTriggers.AddItem(new class'X2AbilityTrigger_UnitPostBeginPlay');
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.RequireWithinRange = true;
+	UnitPropertyCondition.WithinRange = 144;
+	UnitPropertyCondition.ExcludeDead = false;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	UnitPropertyCondition.ExcludeCosmetic = false;
+	UnitPropertyCondition.ExcludeInStasis = false;
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 
-	// During the Enemy player's turn, the Unit gets a dodge increase
-	DodgeEffect = new class'X2Effect_ToHitModifier';
-	DodgeEffect.EffectName = class'X2Ability'.default.CounterattackDodgeEffectName;
-	DodgeEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
-	DodgeEffect.SetDisplayInfo(ePerkBuff_Bonus, "Combat Stance", "", Template.IconImage);
-	DodgeEffect.AddEffectHitModifier(eHit_Graze, default.CombatStanceCounterattackDodgeAmount, "Combat Stance", class'X2AbilityToHitCalc_StandardMelee', true, false, true, true, , false);
-	DodgeEffect.bApplyAsTarget = true;
+	SourceNotConcealedCondition = new class'X2Condition_UnitProperty';
+	SourceNotConcealedCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(SourceNotConcealedCondition);
 
 	Condition = new class'X2Condition_UnitValue';
 	Condition.AddCheckValue('LWD_Reave_Charges', 0, eCheck_GreaterThan);
-	DodgeEffect.TargetConditions.AddItem(Condition);
+	Template.AbilityShooterConditions.AddItem(Condition);
 
-	Template.AddShooterEffect(DodgeEffect);
-
-	// The Unit gets to counterattack once
-	SetUnitValEffect = new class'X2Effect_SetUnitValue';
-	SetUnitValEffect.UnitName = class'X2Ability'.default.CounterattackDodgeEffectName;
-	SetUnitValEffect.NewValueToSet = class'X2Ability'.default.CounterattackDodgeUnitValue;
-	SetUnitValEffect.CleanupType = eCleanup_BeginTurn;
-	SetUnitValEffect.TargetConditions.AddItem(Condition);
-	Template.AddTargetEffect(SetUnitValEffect);
-
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	
-	return Template;
-}//CombatStancePreparationAbility
-
-static function X2AbilityTemplate CombatStanceCounterattackAbility(name TemplateName, string ImageIcon)
-{
-	local X2AbilityTemplate Template;
-	local X2AbilityTrigger_EventListener EventListener;
-	
-	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
-	Template.IconImage = ImageIcon;
-
-	Template.bDontDisplayInAbilitySummary = true;
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Offensive;
-
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	Template.AddShooterEffectExclusions();
-
-	EventListener = new class'X2AbilityTrigger_EventListener';
-	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
-	EventListener.ListenerData.EventID = 'AbilityActivated';
-	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.MeleeCounterattackListener;  // this probably has to change
-	Template.AbilityTriggers.AddItem(EventListener);
-
-	// Add dead eye to guarantee the explosion occurs
-	Template.AbilityToHitCalc = default.DeadEye;
-
-	Template.AbilityTargetStyle = default.SelfTarget;
-
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.CinescriptCameraType = "Muton_Counterattack";  // might need to change this to ranger or stun lancer ...
+	AddPerTargetCooldown(Template, 1);
 
 	return Template;
-}//CombatStanceCounterattackAbility
+}
 	
 static function X2AbilityTemplate Ravager(name TemplateName, string ImageIcon)
 {
