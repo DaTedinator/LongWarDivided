@@ -447,6 +447,7 @@ static function X2AbilityTemplate Reaver(name TemplateName, string ImageIcon)
 	
 static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
 {
+	local X2AbilityTemplate Template;
 	local XMBEffect_AddOnslaughtCharges Effect;
 
 	Effect = new class'XMBEffect_AddOnslaughtCharges';
@@ -456,7 +457,11 @@ static function X2AbilityTemplate Berserker(name TemplateName, string ImageIcon)
 	Effect.MaxCharges = 1;
 	Effect.MaxIncreaseAbilities.AddItem('LWD_Warlord');
 
-	return SelfTargetTrigger(TemplateName, ImageIcon, false, Effect, 'UnitTakeEffectDamage');
+	Template = SelfTargetTrigger(TemplateName, ImageIcon, false, Effect, 'UnitTakeEffectDamage');
+
+	AddIconPassive(Template);
+
+	return Template;
 }//Berserker
 	
 static function X2AbilityTemplate Viking(name TemplateName, string ImageIcon)

@@ -60,4 +60,5 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 defaultproperties
 {
 	MaxIncreasePerAbility = 1
+	MaxCharges = 1
 }
