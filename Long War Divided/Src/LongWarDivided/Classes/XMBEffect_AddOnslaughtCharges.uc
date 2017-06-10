@@ -11,7 +11,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local StateObjectReference ObjRef;
 	local name MaxIncreaseAbilityName;
 	local StateObjectReference MaxIncreaseAbilityRef;
-	local int Charges;
+	local int Charges, myMax;
 	local XComGameState_Unit UnitState;
 	local name UnitValueName;
 	
@@ -25,6 +25,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	if (class'XMBEffectUtilities'.static.SkipForDirectMissionTransfer(ApplyEffectParameters))
 		return;
 
+	myMax = MaxCharges;
 	if (MaxIncreaseAbilities.Length > 0)
 	{
 		foreach MaxIncreaseAbilities(MaxIncreaseAbilityName)
@@ -32,7 +33,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 			MaxIncreaseAbilityRef = UnitState.FindAbility(MaxIncreaseAbilityName);
 			if (MaxIncreaseAbilityRef.ObjectID > 0)
 			{
-				MaxCharges += MaxIncreasePerAbility;
+				myMax += MaxIncreasePerAbility;
 			}
 		}
 	}
@@ -44,11 +45,11 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		{
 			Charges = bAllowUseAmmoAsCharges ? AbilityState.GetCharges() : AbilityState.iCharges;
 			UnitValueName = name(AbilityState.GetMyTemplateName() $ "_Charges");
-			if (MaxCharges < 0 || Charges < MaxCharges)
+			if (MaxCharges < 0 || Charges < myMax)
 			{
 				Charges += BonusCharges;
-				if (MaxCharges >= 0 && Charges > MaxCharges)
-					Charges = MaxCharges;
+				if ( MaxCharges >= 0 && Charges > myMax )
+					Charges = myMax;
 
 				SetCharges(AbilityState, Charges, NewGameState);
 				NewUnit.SetUnitFloatValue(UnitValueName, Charges, eCleanup_BeginTactical);
