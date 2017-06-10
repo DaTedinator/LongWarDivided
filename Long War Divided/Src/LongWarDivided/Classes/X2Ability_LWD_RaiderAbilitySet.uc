@@ -78,7 +78,7 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon,
 	UnitValEffect = new class'X2Effect_SetUnitValue';
 	UnitValEffect.UnitName = 'ReaveCharged';
 	UnitValEffect.NewValueToSet = 1;
-	Template.AbilityShooterEffects.AddItem(UnitValEffect);
+	Template.AddShooterEffect(UnitValEffect);
 
 	Template.OverrideAbilities.AddItem('StandardShot');
 
@@ -138,7 +138,7 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon, boo
 	UnitValEffect = new class'X2Effect_SetUnitValue';
 	UnitValEffect.UnitName = 'OnslaughtCharged';
 	UnitValEffect.NewValueToSet = 1;
-	Template.AbilityShooterEffects.AddItem(UnitValEffect);
+	Template.AddShooterEffect(UnitValEffect);
 
 	if (bCharged)
 	{
