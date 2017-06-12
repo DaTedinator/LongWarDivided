@@ -38,6 +38,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Marksman
 	Templates.AddItem(TightChoke('LWD_TightChoke', "img:///UILibrary_LWD.ability_tightchoke"));
 	Templates.AddItem(WhitesOfTheirEyes('LWD_WhitesOfTheirEyes', "img:///UILibrary_LWD.ability_whitesoftheireyes"));
+	Templates.AddItem(CloseRange('LWD_CloseRange', "img:///UILibrary_LWD.ability_CloseRange"));
+	Templates.AddItem(CloseRangeShot('LWD_CloseRangeShot', "img:///UILibrary_PerkIcons.UIPerk_snipershot"));
 	// Partisan
 	Templates.AddItem(CattleProd('LWD_CattleProd', "img:///UILibrary_LWD.ability_cattleprod"));
 	// Sapper
@@ -459,7 +461,6 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 	return Template;
 }//Tight Choke
 
-// TTODO: Consider whether to add aim bonus to these attacks/get rid of range penalties
 static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
@@ -503,6 +504,42 @@ static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string Im
 
 	return Template;
 }//Whites of Their eyes
+
+static function X2AbilityTemplate CloseRange(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_AdjustRangePenalty CloseEffect;
+	local X2Condition_WeaponSlot SniperCondition;
+
+	CloseEffect = new class'X2Effect_AdjustRangePenalty';
+	CloseEffect.Multiplier = -1;
+	CloseEffect.FlatMod = 0;
+	CloseEffect.WithinTiles = 14;
+	CloseEffect.bOnlyGood = true;
+
+	SniperCondition = new class'X2Condition_WeaponSlot';
+	SniperCondition.DesiredSlot = eInvSlot_PrimaryWeapon;
+	SniperCondition.WeaponCategory = 'sniper_rifle';
+
+	CloseEffect.TargetConditions.AddItem(SniperCondition);
+	
+	Template = Passive(TemplateName, ImageIcon, false, CloseEffect);
+
+	Template.AdditionalAbilities.AddItem('CloseRangeShot');
+
+	return Template;
+}//Close Range
+
+static function X2AbilityTemplate CloseRangeShot(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate                 Template;	
+
+	Template = Attack(TemplateName, ImageIcon, false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1);
+
+	Template.OverrideAbilities.AddItem('SniperStandardFire');
+
+	return Template;	
+}//CloseRangeShot
 
 static function X2AbilityTemplate CattleProd(name TemplateName, string ImageIcon)
 {

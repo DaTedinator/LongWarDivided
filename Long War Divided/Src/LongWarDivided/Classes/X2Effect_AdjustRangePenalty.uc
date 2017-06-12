@@ -1,6 +1,8 @@
 class X2Effect_AdjustRangePenalty extends X2Effect_Persistent;
 
 var float Multiplier;			//	Multiply range modifier by this
+var int WithinTiles;			//	Only has any effect within this many tiles
+var int OutsideTiles;			//	Only has any effect outside this many tiles
 var int FlatMod;				//	Add this to range modifier
 var int PastMax;				//	The effect extends this many tiles past the weapon's maximum range; -1 == unlimited
 var int PastMaxMultiplier;		//
@@ -25,11 +27,11 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 		RangeTable = WeaponTemplate.RangeAccuracy;
 		Tiles = Attacker.TileDistanceBetween(Target); 
 		Modifier = 0;
-		if( Tiles < RangeTable.Length )
+		if( Tiles < RangeTable.Length && Tiles < WithinTiles && Tiles > OutsideTiles )
         {
 			Modifier = (RangeTable[Tiles] * Multiplier) + FlatMod;
         }
-		else if ( Tiles < RangeTable.Length + PastMax )
+		else if ( Tiles < RangeTable.Length + PastMax && Tiles < WithinTiles && Tiles > OutsideTiles )
 		{
 			Modifier = (RangeTable[RangeTable.Length - 1] * PastMaxMultiplier) + PastMaxFlatMod;
 		}
@@ -48,6 +50,8 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 
 defaultproperties
 {
+	WithinTiles = 1000
+	OutsideTiles = -1
     Multiplier = 1.0
 	FlatMod = 0
 	PastMax = 0
