@@ -38,7 +38,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Marksman
 	Templates.AddItem(TightChoke('LWD_TightChoke', "img:///UILibrary_LWD.ability_tightchoke"));
 	Templates.AddItem(WhitesOfTheirEyes('LWD_WhitesOfTheirEyes', "img:///UILibrary_LWD.ability_whitesoftheireyes"));
-	Templates.AddItem(CloseRange('LWD_CloseRange', "img:///UILibrary_LWD.ability_CloseRange"));
+	Templates.AddItem(CloseRange('LWD_CloseRange', "img:///UILibrary_LWD.ability_DesignatedMarksman"));
 	Templates.AddItem(CloseRangeShot('LWD_CloseRangeShot', "img:///UILibrary_PerkIcons.UIPerk_snipershot"));
 	// Partisan
 	Templates.AddItem(CattleProd('LWD_CattleProd', "img:///UILibrary_LWD.ability_cattleprod"));
