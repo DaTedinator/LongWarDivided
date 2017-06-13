@@ -9,6 +9,12 @@ var int PastMaxMultiplier;		//
 var int PastMaxFlatMod;			//
 var bool bOnlyGood, bOnlyBad;	//	if bOnlyGood, only provide aim bonuses (i.e. reduce range penalties); 
 								//	if bOnlyBad, only provide aim maluses (i.e., reduce range bonuses);
+//////////////////////////
+// Condition properties //
+//////////////////////////
+
+var array<X2Condition> AbilityTargetConditions;		// Conditions on the target of the ability being modified.
+var array<X2Condition> AbilityShooterConditions;	// Conditions on the shooter of the ability being modified.
 
 function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState, class<X2AbilityToHitCalc> ToHitType, bool bMelee, bool bFlanking, bool bIndirectFire, out array<ShotModifierInfo> ShotModifiers)
 
@@ -18,6 +24,9 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 	local array<int>			RangeTable;
 	local X2WeaponTemplate		WeaponTemplate;
     local int					Tiles, Modifier;
+
+	if (ValidateAttack(EffectState, Attacker, Target, AbilityState) != 'AA_Success')
+		return;
 
 	SourceWeapon = AbilityState.GetSourceWeapon();
 
@@ -46,6 +55,21 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
         ShotInfo.Reason = FriendlyName;
         ShotModifiers.AddItem(ShotInfo);
     } 
+}
+
+function private name ValidateAttack(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState)
+{
+	local name AvailableCode;
+
+	AvailableCode = class'XMBEffectUtilities'.static.CheckTargetConditions(AbilityTargetConditions, EffectState, Attacker, Target, AbilityState);
+	if (AvailableCode != 'AA_Success')
+		return AvailableCode;
+		
+	AvailableCode = class'XMBEffectUtilities'.static.CheckShooterConditions(AbilityShooterConditions, EffectState, Attacker, Target, AbilityState);
+	if (AvailableCode != 'AA_Success')
+		return AvailableCode;
+		
+	return 'AA_Success';
 }
 
 defaultproperties

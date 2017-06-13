@@ -48,9 +48,9 @@ static function X2AbilityTemplate SwitchHitter(name TemplateName, string ImageIc
 
 	Template = PurePassive(TemplateName, ImageIcon);
 
-	Template.AdditionalAbilities.AddItem('LWD_Onslaught');
-	Template.AdditionalAbilities.AddItem('LWD_ChargedOnslaught');
-	Template.AdditionalAbilities.AddItem('LWD_OnslaughtBonusMove');
+	//Template.AdditionalAbilities.AddItem('LWD_Onslaught');
+	//Template.AdditionalAbilities.AddItem('LWD_ChargedOnslaught');
+	//Template.AdditionalAbilities.AddItem('LWD_OnslaughtBonusMove');
 
 	Template.AdditionalAbilities.AddItem('LWD_Reave');
 	Template.AdditionalAbilities.AddItem('LWD_ChargedReave');
@@ -63,11 +63,12 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon,
 {
 	local X2AbilityTemplate Template;
 	local X2AbilityCost_ActionPoints ActionPointCost;
+	local X2AbilityCost_Ammo AmmoCost;
 	local X2Condition_UnitValue ChargedCondition;
 	local X2Effect_SetUnitValue OnslaughtChargeEffect;
 	local X2Effect_SetUnitValue ReaveChargeEffect;
 
-	Template = Attack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_None, 1);
+	Template = Attack(TemplateName, ImageIcon, true, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_None, 0);
 
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 0;
@@ -75,10 +76,15 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon,
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('LWD_BattleFocus');
 	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
 
 	ReaveChargeEffect = new class'X2Effect_SetUnitValue';
 	ReaveChargeEffect.UnitName = 'ReaveCharged';
 	ReaveChargeEffect.NewValueToSet = 1;
+	ReaveChargeEffect.CleanupType = eCleanup_BeginTactical;
 	Template.AddShooterEffect(ReaveChargeEffect);
 
 	Template.OverrideAbilities.AddItem('StandardShot');
@@ -86,15 +92,19 @@ static function X2AbilityTemplate Onslaught(name TemplateName, string ImageIcon,
 	if (bCharged)
 	{
 		ChargedCondition = new class'X2Condition_UnitValue';
-		ChargedCondition.AddCheckValue('OnslaughtCharged', 1, eCheck_Exact);
+		ChargedCondition.AddCheckValue('OnslaughtCharged', 1, eCheck_Exact,,,'AA_NotCharged');
 		Template.AbilityShooterConditions.AddItem(ChargedCondition);
-
-		Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailableOrNoTargets;
+		Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideSpecificErrors;
+		Template.HideErrors.AddItem('AA_NotCharged');
 	}
 	else
 	{
 		Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideIfOtherAvailable;
 		Template.HideIfAvailable.AddItem( 'LWD_ChargedOnslaught' );
+
+		Template.AdditionalAbilities.AddItem('LWD_ChargedOnslaught');
+		Template.AdditionalAbilities.AddItem('LWD_OnslaughtBonusMove');
+
 	}
 
 	OnslaughtChargeEffect = new class'X2Effect_SetUnitValue';
@@ -146,15 +156,16 @@ static function X2AbilityTemplate Reave(name TemplateName, string ImageIcon, boo
 	OnslaughtChargeEffect = new class'X2Effect_SetUnitValue';
 	OnslaughtChargeEffect.UnitName = 'OnslaughtCharged';
 	OnslaughtChargeEffect.NewValueToSet = 1;
+	OnslaughtChargeEffect.CleanupType = eCleanup_BeginTactical;
 	Template.AddShooterEffect(OnslaughtChargeEffect);
 
 	if (bCharged)
 	{
 		ChargedCondition = new class'X2Condition_UnitValue';
-		ChargedCondition.AddCheckValue('ReaveCharged', 1, eCheck_Exact);
+		ChargedCondition.AddCheckValue('ReaveCharged', 1, eCheck_Exact,,,'AA_NotCharged');
 		Template.AbilityShooterConditions.AddItem(ChargedCondition);
-
-		Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailableOrNoTargets;
+		Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideSpecificErrors;
+		Template.HideErrors.AddItem('AA_NotCharged');
 	}
 	else
 	{
