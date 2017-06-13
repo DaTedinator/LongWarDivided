@@ -1,12 +1,20 @@
 class X2Effect_AdjustRangePenalty extends X2Effect_Persistent;
 
 var float Multiplier;			//	Multiply range modifier by this
+var int WithinTiles;			//	Only has any effect within this many tiles
+var int OutsideTiles;			//	Only has any effect outside this many tiles
 var int FlatMod;				//	Add this to range modifier
 var int PastMax;				//	The effect extends this many tiles past the weapon's maximum range; -1 == unlimited
 var int PastMaxMultiplier;		//
 var int PastMaxFlatMod;			//
 var bool bOnlyGood, bOnlyBad;	//	if bOnlyGood, only provide aim bonuses (i.e. reduce range penalties); 
 								//	if bOnlyBad, only provide aim maluses (i.e., reduce range bonuses);
+//////////////////////////
+// Condition properties //
+//////////////////////////
+
+var array<X2Condition> AbilityTargetConditions;		// Conditions on the target of the ability being modified.
+var array<X2Condition> AbilityShooterConditions;	// Conditions on the shooter of the ability being modified.
 
 function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState, class<X2AbilityToHitCalc> ToHitType, bool bMelee, bool bFlanking, bool bIndirectFire, out array<ShotModifierInfo> ShotModifiers)
 
@@ -17,6 +25,9 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 	local X2WeaponTemplate		WeaponTemplate;
     local int					Tiles, Modifier;
 
+	if (ValidateAttack(EffectState, Attacker, Target, AbilityState) != 'AA_Success')
+		return;
+
 	SourceWeapon = AbilityState.GetSourceWeapon();
 
 	if(SourceWeapon != none)
@@ -25,11 +36,11 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 		RangeTable = WeaponTemplate.RangeAccuracy;
 		Tiles = Attacker.TileDistanceBetween(Target); 
 		Modifier = 0;
-		if( Tiles < RangeTable.Length )
+		if( Tiles < RangeTable.Length && Tiles < WithinTiles && Tiles > OutsideTiles )
         {
 			Modifier = (RangeTable[Tiles] * Multiplier) + FlatMod;
         }
-		else if ( Tiles < RangeTable.Length + PastMax )
+		else if ( Tiles < RangeTable.Length + PastMax && Tiles < WithinTiles && Tiles > OutsideTiles )
 		{
 			Modifier = (RangeTable[RangeTable.Length - 1] * PastMaxMultiplier) + PastMaxFlatMod;
 		}
@@ -46,8 +57,25 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
     } 
 }
 
+function private name ValidateAttack(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState)
+{
+	local name AvailableCode;
+
+	AvailableCode = class'XMBEffectUtilities'.static.CheckTargetConditions(AbilityTargetConditions, EffectState, Attacker, Target, AbilityState);
+	if (AvailableCode != 'AA_Success')
+		return AvailableCode;
+		
+	AvailableCode = class'XMBEffectUtilities'.static.CheckShooterConditions(AbilityShooterConditions, EffectState, Attacker, Target, AbilityState);
+	if (AvailableCode != 'AA_Success')
+		return AvailableCode;
+		
+	return 'AA_Success';
+}
+
 defaultproperties
 {
+	WithinTiles = 1000
+	OutsideTiles = -1
     Multiplier = 1.0
 	FlatMod = 0
 	PastMax = 0

@@ -15,6 +15,7 @@ simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGa
 	local int ChargesSpent;
 	local name UnitValueName;
 	local UnitValue UnitVal;
+	local bool _bOnlyOnHit;
 
 	History = `XCOMHISTORY;
 	UnitState = XComGameState_Unit(NewGameState.GetGameStateForObjectID(kAbility.OwnerStateObject.ObjectID));
@@ -23,6 +24,7 @@ simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGa
 	UnitValueName = name(kAbility.GetMyTemplateName() $ "_Charges");
 	UnitState.GetUnitValue(UnitValueName, UnitVal);
 
+	_bOnlyOnHit = bOnlyOnHit;
 	if (OnlyOnHitAbilities.Length > 0)
 	{
 		foreach OnlyOnHitAbilities(OnlyOnHitAbilityName)
@@ -30,12 +32,12 @@ simulated function ApplyCost(XComGameStateContext_Ability AbilityContext, XComGa
 			OnlyOnHitAbilityRef = UnitState.FindAbility(OnlyOnHitAbilityName);
 			if (OnlyOnHitAbilityRef.ObjectID > 0)
 			{
-				bOnlyOnHit = true;
+				_bOnlyOnHit = true;
 			}
 		}
 	}
 
-	if (bOnlyOnHit && AbilityContext.IsResultContextMiss())
+	if (_bOnlyOnHit && AbilityContext.IsResultContextMiss())
 	{
 		return;
 	}

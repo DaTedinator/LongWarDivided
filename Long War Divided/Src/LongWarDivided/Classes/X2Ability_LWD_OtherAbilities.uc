@@ -38,6 +38,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	// Marksman
 	Templates.AddItem(TightChoke('LWD_TightChoke', "img:///UILibrary_LWD.ability_tightchoke"));
 	Templates.AddItem(WhitesOfTheirEyes('LWD_WhitesOfTheirEyes', "img:///UILibrary_LWD.ability_whitesoftheireyes"));
+	Templates.AddItem(CloseRange('LWD_CloseRange', "img:///UILibrary_LWD.ability_DesignatedMarksman"));
+	Templates.AddItem(CloseRangeShot('LWD_CloseRangeShot', "img:///UILibrary_PerkIcons.UIPerk_snipershot"));
 	// Partisan
 	Templates.AddItem(CattleProd('LWD_CattleProd', "img:///UILibrary_LWD.ability_cattleprod"));
 	// Sapper
@@ -127,6 +129,8 @@ static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIc
 	local X2Condition_AbilitySourceWeapon WeaponCondition;
 	local X2AbilityTemplate Template;
 	local X2Condition_UnitValue ValueCondition;
+	local X2Effect_GrantActionPoints ActionPointEffect;
+	local X2Effect_ImmediateAbilityActivation ReloadEffect;
 
 	// Create a triggered ability that runs at the end of the player's turn
 	Template = SelfTargetTrigger(TemplateName, ImageIcon, true, none, 'PlayerTurnEnded', eFilter_Player);
@@ -145,93 +149,27 @@ static function X2AbilityTemplate HandsAndFeet(name TemplateName, string ImageIc
 	ValueCondition.AddCheckValue('NonMoveActionsThisTurn', 0, eCheck_Exact);
 	Template.AbilityTargetConditions.AddItem(ValueCondition);
 
-//	// Reloading requires an action point, so grant one if the unit is out of action points
-//	ActionPointEffect = new class'X2Effect_GrantActionPoints';
-//	ActionPointEffect.PointType = class'X2CharacterTemplateManager'.default.StandardActionPoint;
-//	ActionPointEffect.NumActionPoints = 1;
-//	ActionPointEffect.bApplyOnlyWhenOut = true;
-//	AddSecondaryEffect(Template, ActionPointEffect);
+	// Reloading requires an action point, so grant one if the unit is out of action points
+	ActionPointEffect = new class'X2Effect_GrantActionPoints';
+	ActionPointEffect.PointType = class'X2CharacterTemplateManager'.default.StandardActionPoint;
+	ActionPointEffect.NumActionPoints = 1;
+	ActionPointEffect.bApplyOnlyWhenOut = true;
+	AddSecondaryEffect(Template, ActionPointEffect);
 
-//	// Activate the Reload ability
-//	ReloadEffect = new class'X2Effect_ImmediateAbilityActivation';
-//	ReloadEffect.EffectName = 'ImmediateReload';
-//	ReloadEffect.AbilityName = 'Reload';
-//	ReloadEffect.BuildPersistentEffect(1, false, true, , eGameRule_PlayerTurnBegin);
-//	AddSecondaryEffect(Template, ReloadEffect);
+	// Activate the Reload ability
+	ReloadEffect = new class'X2Effect_ImmediateAbilityActivation';
+	ReloadEffect.EffectName = 'ImmediateReload';
+	ReloadEffect.AbilityName = 'Reload';
+	ReloadEffect.BuildPersistentEffect(1, false, true, , eGameRule_PlayerTurnBegin);
+	//ReloadEffect.VisualizationFn = EffectFlyOver_Visualization;
+	AddSecondaryEffect(Template, ReloadEffect);
 
 	Template.bShowActivation = true;
 
 	Template.ActivationSpeech = 'Reloading';
 
-	Template.BuildNewGameStateFn = HandsAndFeetAbility_BuildGameState;
-	Template.BuildVisualizationFn = HandsAndFeetAbility_BuildVisualization;
-
 	return Template;
 }//Hands and Feet
-
-simulated function XComGameState HandsAndFeetAbility_BuildGameState( XComGameStateContext Context )
-{
-	local XComGameState NewGameState;
-	local XComGameState_Unit UnitState;
-	local XComGameStateContext_Ability AbilityContext;
-	local XComGameState_Ability AbilityState;
-	local XComGameState_Item WeaponState, NewWeaponState;
-
-	NewGameState = `XCOMHISTORY.CreateNewGameState(true, Context);	
-	AbilityContext = XComGameStateContext_Ability(Context);	
-	AbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID( AbilityContext.InputContext.AbilityRef.ObjectID ));
-
-	WeaponState = AbilityState.GetSourceWeapon();
-	NewWeaponState = XComGameState_Item(NewGameState.CreateStateObject(class'XComGameState_Item', WeaponState.ObjectID));
-
-	UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', AbilityContext.InputContext.SourceObject.ObjectID));	
-
-	AbilityState.GetMyTemplate().ApplyCost(AbilityContext, AbilityState, UnitState, NewWeaponState, NewGameState);	
-
-	//  refill the weapon's ammo	
-	NewWeaponState.Ammo = NewWeaponState.GetClipSize();
-	
-	NewGameState.AddStateObject(UnitState);
-	NewGameState.AddStateObject(NewWeaponState);
-
-	return NewGameState;	
-}//HandsAndFeetAbility_BuildGameState
-
-simulated function HandsAndFeetAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
-{
-	local XComGameStateHistory History;
-	local XComGameStateContext_Ability  Context;
-	local StateObjectReference          ShootingUnitRef;	
-	local X2Action_PlayAnimation		PlayAnimation;
-
-	local VisualizationTrack        EmptyTrack;
-	local VisualizationTrack        BuildTrack;
-
-	local XComGameState_Ability Ability;
-	local X2Action_PlaySoundAndFlyOver SoundAndFlyover;
-
-	History = `XCOMHISTORY;
-
-	Context = XComGameStateContext_Ability(VisualizeGameState.GetContext());
-	ShootingUnitRef = Context.InputContext.SourceObject;
-
-	//Configure the visualization track for the shooter
-	//****************************************************************************************
-	BuildTrack = EmptyTrack;
-	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(ShootingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
-	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(ShootingUnitRef.ObjectID);
-	BuildTrack.TrackActor = History.GetVisualizer(ShootingUnitRef.ObjectID);
-					
-	PlayAnimation = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTrack(BuildTrack, Context));
-	PlayAnimation.Params.AnimName = 'HL_Reload';
-
-	Ability = XComGameState_Ability(History.GetGameStateForObjectID(Context.InputContext.AbilityRef.ObjectID));
-	SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTrack(BuildTrack, Context));
-	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, "", Ability.GetMyTemplate().ActivationSpeech, eColor_Good);
-
-	OutVisualizationTracks.AddItem(BuildTrack);
-	//****************************************************************************************
-}//HandsAndFeetAbility_BuildVisualization
 
 static function X2AbilityTemplate ArtificialIntelligence(name TemplateName, string ImageIcon)
 {
@@ -451,15 +389,15 @@ static function X2AbilityTemplate TightChoke(name TemplateName, string ImageIcon
 
 	Condition = new class'X2Condition_WeaponSlot';
 	Condition.DesiredSlot = eInvSlot_SecondaryWeapon;
+	Condition.WeaponCategory = 'sawedoffshotgun';
 
-	RangeEffect.TargetConditions.AddItem(Condition);
+	RangeEffect.AbilityTargetConditions.AddItem(Condition);
 	
 	Template = Passive(TemplateName, ImageIcon, false, RangeEffect);
 
 	return Template;
 }//Tight Choke
 
-// TTODO: Consider whether to add aim bonus to these attacks/get rid of range penalties
 static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string ImageIcon)
 {
 	local X2AbilityTemplate Template;
@@ -503,6 +441,42 @@ static function X2AbilityTemplate WhitesOfTheirEyes(name TemplateName, string Im
 
 	return Template;
 }//Whites of Their eyes
+
+static function X2AbilityTemplate CloseRange(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_AdjustRangePenalty CloseEffect;
+	local X2Condition_WeaponSlot SniperCondition;
+
+	CloseEffect = new class'X2Effect_AdjustRangePenalty';
+	CloseEffect.Multiplier = -1;
+	CloseEffect.FlatMod = 0;
+	CloseEffect.WithinTiles = 14;
+	CloseEffect.bOnlyGood = true;
+
+	SniperCondition = new class'X2Condition_WeaponSlot';
+	SniperCondition.DesiredSlot = eInvSlot_PrimaryWeapon;
+	SniperCondition.WeaponCategory = 'sniper_rifle';
+
+	CloseEffect.AbilityTargetConditions.AddItem(SniperCondition);
+	
+	Template = Passive(TemplateName, ImageIcon, false, CloseEffect);
+
+	Template.AdditionalAbilities.AddItem('LWD_CloseRangeShot');
+
+	return Template;
+}//Close Range
+
+static function X2AbilityTemplate CloseRangeShot(name TemplateName, string ImageIcon)
+{
+	local X2AbilityTemplate                 Template;	
+
+	Template = Attack(TemplateName, ImageIcon, false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1);
+
+	Template.OverrideAbilities.AddItem('SniperStandardFire');
+
+	return Template;	
+}//CloseRangeShot
 
 static function X2AbilityTemplate CattleProd(name TemplateName, string ImageIcon)
 {
