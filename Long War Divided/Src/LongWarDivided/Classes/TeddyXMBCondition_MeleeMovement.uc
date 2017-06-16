@@ -4,13 +4,24 @@ var int MaxMovementRange;		//	Maximum distance in tiles that the unit is allowed
 var bool bBlueMove;				//	If true, MaxMovementRange = unit's mobility in tiles.
 var float BlueMoveScale;		//	Multiply your mobility by this amount for the purposes of bBlueMove.
 
-event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGameState_BaseObject kSource)
-{ 
-	local XComGameState_Unit SourceState, TargetState;
-	local TTile SourceTile, TargetTile;
-	local array<TTile> PathArray;
+var XComGameState_Unit SourceState;
 
+event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGameState_BaseObject kSource)
+{
 	SourceState = XComGameState_Unit(kSource);
+
+	return 'AA_Success';
+}
+
+event name CallAbilityMeetsCondition(XComGameState_Ability kAbility, XComGameState_BaseObject kTarget)
+{ 
+	local XComGameState_Unit TargetState;
+	local XGUnit UnitVisualizer;
+	local TTile SourceTile, TargetTile;
+	local array<TTile> PathArray, DestinationTiles;
+	local int Distance, MaxDistance;
+
+	UnitVisualizer = XGUnit(SourceState.GetVisualizer());
 	TargetState = XComGameState_Unit(kTarget);
 
 	if( (SourceState == none) || (TargetState == none) )
@@ -18,17 +29,29 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 		return 'AA_NotAUnit';
 	}
 
-	SourceState.GetKeystoneVisibilityLocation(SourceTile);
-	TargetState.GetKeystoneVisibilityLocation(TargetTile);
+//	Distance = SourceState.TileDistanceBetween(TargetState);
 
-	class'X2PathSolver'.static.BuildPath(SourceState, SourceTile, TargetTile, PathArray);
+	SourceTile = SourceState.TileLocation;
+	TargetTile = TargetState.TileLocation;	
+	
+	class'X2AbilityTarget_MovingMelee'.static.SelectAttackTile(SourceState, kTarget, kAbility.GetMyTemplate(), DestinationTiles);
 
-	if (bBlueMove)
+	PathArray.Length = 0;
+	//class'X2PathSolver'.static.BuildPath(SourceState, SourceTile, TargetTile, PathArray);
+	UnitVisualizer.m_kReachableTilesCache.BuildPathToTile(DestinationTiles[0], PathArray);
+	if ( PathArray.Length == 0 )
 	{
-		MaxMovementRange = `METERSTOTILES(SourceState.GetCurrentStat(eStat_Mobility) * BlueMoveScale);
+		return 'AA_NoPath';
 	}
 
-	if ( MaxMovementRange > -1 && PathArray.Length > MaxMovementRange )
+	MaxDistance = MaxMovementRange;
+	if (bBlueMove)
+	{
+		MaxDistance = `METERSTOTILES(SourceState.GetCurrentStat(eStat_Mobility)) * BlueMoveScale;
+	}
+
+	if ( MaxDistance > -1 && PathArray.Length > MaxDistance )
+//	if ( Distance > MaxDistance )
 	{
 		return 'AA_OutOfRange';
 	}
